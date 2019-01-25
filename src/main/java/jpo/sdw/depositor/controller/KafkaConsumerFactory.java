@@ -1,4 +1,4 @@
-package jpo.sdw.depositor;
+package jpo.sdw.depositor.controller;
 
 import java.util.Properties;
 

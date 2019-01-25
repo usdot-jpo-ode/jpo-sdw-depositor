@@ -10,13 +10,15 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-@ConfigurationProperties("ingest")
+@ConfigurationProperties("sdw")
 @PropertySource("classpath:application.properties")
 public class DepositorProperties implements EnvironmentAware {
 
    private static final Logger logger = LoggerFactory.getLogger(DepositorProperties.class);
 
    private static final String DEFAULT_KAFKA_PORT = "9092";
+   private static final String DEFAULT_DESTINATION_URL = "localhost";
+   private static final String DEFAULT_KAFKA_TOPIC = "test.topic";
 
    @Autowired
    private Environment environment;
@@ -24,6 +26,10 @@ public class DepositorProperties implements EnvironmentAware {
    private String destinationUrl;
    private String kafkaBrokers;
    private String subscriptionTopic;
+
+   public DepositorProperties() {
+
+   }
 
    @PostConstruct
    void initialize() {
@@ -39,6 +45,8 @@ public class DepositorProperties implements EnvironmentAware {
             dockerIp = "localhost";
          }
          setKafkaBrokers(dockerIp + ":" + DEFAULT_KAFKA_PORT);
+         setDestinationUrl(DEFAULT_DESTINATION_URL);
+         setSubscriptionTopic(DEFAULT_KAFKA_TOPIC);
       }
    }
 
