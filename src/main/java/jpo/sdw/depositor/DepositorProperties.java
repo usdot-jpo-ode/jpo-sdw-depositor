@@ -17,8 +17,8 @@ public class DepositorProperties implements EnvironmentAware {
    private static final Logger logger = LoggerFactory.getLogger(DepositorProperties.class);
 
    private static final String DEFAULT_KAFKA_PORT = "9092";
-   private static final String DEFAULT_DESTINATION_URL = "localhost";
-   private static final String DEFAULT_KAFKA_TOPIC = "test.topic";
+   private static final String DEFAULT_DESTINATION_URL = "http://localhost";
+   private static final String DEFAULT_KAFKA_TOPIC = "topic.J2735TimBroadcastJson";
 
    @Autowired
    private Environment environment;
@@ -35,7 +35,7 @@ public class DepositorProperties implements EnvironmentAware {
    void initialize() {
       if (getKafkaBrokers() == null) {
 
-         logger.info("ode.kafkaBrokers property not defined. Will try DOCKER_HOST_IP => {}", getKafkaBrokers());
+         logger.info("sdw.kafkaBrokers property not defined. Will try DOCKER_HOST_IP => {}", getKafkaBrokers());
 
          String dockerIp = System.getenv("DOCKER_HOST_IP");
 
