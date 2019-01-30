@@ -13,6 +13,9 @@ import jpo.sdw.depositor.depositors.RestDepositor;
 public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
 
    public static class LoopController {
+      private LoopController() {
+         throw new UnsupportedOperationException();
+      }
       public static boolean loop() {
          return true;
       }

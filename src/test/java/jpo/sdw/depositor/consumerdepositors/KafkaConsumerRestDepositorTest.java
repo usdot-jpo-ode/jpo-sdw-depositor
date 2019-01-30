@@ -1,7 +1,12 @@
 package jpo.sdw.depositor.consumerdepositors;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,10 +66,23 @@ public class KafkaConsumerRestDepositorTest {
       testKafkaConsumerRestDepositor.run("testTopic");
    }
 
-   @SuppressWarnings("static-access") // for sonar class coverage
    @Test
    public void loopControllerShouldAlwaysReturnTrue() {
-      assertTrue(new LoopController().loop());
+      assertTrue(LoopController.loop());
+   }
+
+   @Test
+   public void testConstructorIsPrivate()
+         throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+      Constructor<LoopController> constructor = LoopController.class.getDeclaredConstructor();
+      assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+      constructor.setAccessible(true);
+      try {
+         constructor.newInstance();
+         fail("Expected IllegalAccessException.class");
+      } catch (Exception e) {
+         assertEquals(InvocationTargetException.class, e.getClass());
+      }
    }
 
 }
