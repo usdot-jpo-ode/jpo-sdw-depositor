@@ -34,7 +34,7 @@ public class KafkaConsumerRestDepositorTest {
    @Mocked
    ConsumerRecord<String, String> mockConsumerRecord;
 
-   @Test
+   @Test(timeout = 4000) // 4 second timeout for safety; this test overrides an infinite loop
    public void runShouldDepositMessage(@Capturing LoopController capturingLoopController) {
 
       List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
