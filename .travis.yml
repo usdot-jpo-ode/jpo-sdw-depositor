@@ -4,8 +4,8 @@ sudo: false
 addons:
   sonarcloud:
     organization: "usdot-jpo-ode"
-    token:
-      secure: $SONAR_SECURITY_TOKEN_NEW
+#    token:
+#      secure: $SONAR_SECURITY_TOKEN_NEW
     branches:
       - .*
 script:
