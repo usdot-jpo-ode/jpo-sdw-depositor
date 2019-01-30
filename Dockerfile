@@ -7,7 +7,7 @@ WORKDIR /home
 COPY pom.xml .
 RUN mvn -B dependency:resolve-plugins dependency:resolve
 
-COPY . .
+COPY ./src ./src
 RUN mvn package
 
 # Run container

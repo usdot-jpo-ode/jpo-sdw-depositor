@@ -21,7 +21,7 @@ public class DepositController {
             .createConsumer(depositorProperties.getKafkaBrokers());
 
       SDWDepositor sdwDepositor = new SDWDepositor(new RestTemplate(),
-            new URI(depositorProperties.getDestinationUrl()));
+            new URI("http://" + depositorProperties.getDestinationUrl()+":"+depositorProperties.getDestinationPort()+"/sdw"));
       KafkaConsumerRestDepositor kcrd = new KafkaConsumerRestDepositor(kafkaConsumer, sdwDepositor);
 
       kcrd.run(depositorProperties.getSubscriptionTopic());

@@ -18,6 +18,7 @@ public class DepositorProperties implements EnvironmentAware {
 
    private static final String DEFAULT_KAFKA_PORT = "9092";
    private static final String DEFAULT_DESTINATION_URL = "http://localhost";
+   private static final String DEFAULT_DESTINATION_PORT = "8082";
    private static final String DEFAULT_KAFKA_TOPIC = "topic.J2735TimBroadcastJson";
 
    @Autowired
@@ -26,6 +27,7 @@ public class DepositorProperties implements EnvironmentAware {
    private String destinationUrl;
    private String kafkaBrokers;
    private String subscriptionTopic;
+   private String destinationPort;
 
    public DepositorProperties() {
 
@@ -34,10 +36,8 @@ public class DepositorProperties implements EnvironmentAware {
    @PostConstruct
    void initialize() {
       if (getKafkaBrokers() == null) {
-
-         logger.info("sdw.kafkaBrokers property not defined. Will try DOCKER_HOST_IP => {}", getKafkaBrokers());
-
          String dockerIp = System.getenv("DOCKER_HOST_IP");
+         logger.info("sdw.kafkaBrokers property not defined. Will try DOCKER_HOST_IP => {}", dockerIp);
 
          if (dockerIp == null) {
             logger.warn(
@@ -45,9 +45,14 @@ public class DepositorProperties implements EnvironmentAware {
             dockerIp = "localhost";
          }
          setKafkaBrokers(dockerIp + ":" + DEFAULT_KAFKA_PORT);
-         setDestinationUrl(DEFAULT_DESTINATION_URL);
-         setSubscriptionTopic(DEFAULT_KAFKA_TOPIC);
       }
+
+      if (getDestinationUrl() == null)
+         setDestinationUrl(DEFAULT_DESTINATION_URL);
+      if (getDestinationPort() == null)
+         setDestinationPort(DEFAULT_DESTINATION_PORT);
+      if (getSubscriptionTopic() == null)
+         setSubscriptionTopic(DEFAULT_KAFKA_TOPIC);
    }
 
    @Override
@@ -81,5 +86,13 @@ public class DepositorProperties implements EnvironmentAware {
 
    public void setSubscriptionTopic(String subscriptionTopic) {
       this.subscriptionTopic = subscriptionTopic;
+   }
+
+   public String getDestinationPort() {
+      return destinationPort;
+   }
+
+   public void setDestinationPort(String destinationPort) {
+      this.destinationPort = destinationPort;
    }
 }

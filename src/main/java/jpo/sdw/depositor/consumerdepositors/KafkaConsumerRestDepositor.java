@@ -29,7 +29,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
          ConsumerRecords<String, String> records = this.kafkaConsumer.poll(100);
          for (ConsumerRecord<String, String> record : records) {
             logger.info("offset = {}, key = {}, value = {}", record.offset(), record.key(), record.value());
-            logger.info("Depositing message!");
+            logger.info("Depositing message to {}", this.getRestDepositor().getDestination().toString());
             this.getRestDepositor().deposit(record.value());
          }
       }
