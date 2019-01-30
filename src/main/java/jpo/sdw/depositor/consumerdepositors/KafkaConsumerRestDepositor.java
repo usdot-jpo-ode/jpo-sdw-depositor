@@ -12,6 +12,12 @@ import jpo.sdw.depositor.depositors.RestDepositor;
 
 public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
 
+   public static class LoopController {
+      public static boolean loop() {
+         return true;
+      }
+   }
+
    private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerRestDepositor.class);
 
    private RestDepositor<String> restDepositor;
@@ -24,9 +30,9 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
 
    @Override
    public void run(String topic) {
-      this.kafkaConsumer.subscribe(Arrays.asList(topic));
-      while (true) {
-         ConsumerRecords<String, String> records = this.kafkaConsumer.poll(100);
+      this.getKafkaConsumer().subscribe(Arrays.asList(topic));
+      while (LoopController.loop()) {
+         ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(100);
          for (ConsumerRecord<String, String> record : records) {
             logger.info("offset = {}, key = {}, value = {}", record.offset(), record.key(), record.value());
             logger.info("Depositing message to {}", this.getRestDepositor().getDestination().toString());

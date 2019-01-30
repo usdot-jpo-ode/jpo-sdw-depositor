@@ -16,18 +16,28 @@ public class DepositorProperties implements EnvironmentAware {
 
    private static final Logger logger = LoggerFactory.getLogger(DepositorProperties.class);
 
+   private static final String DEFAULT_GROUP_ID = "usdot.jpo.sdw";
+
    private static final String DEFAULT_KAFKA_PORT = "9092";
-   private static final String DEFAULT_DESTINATION_URL = "http://localhost";
+   private static final String DEFAULT_KAFKA_SUBSCRIPTION_TOPIC = "topic.J2735TimBroadcastJson";
+
+   private static final String DEFAULT_DESTINATION_PROTOCOL = "http";
+   private static final String DEFAULT_DESTINATION_URL = "localhost";
    private static final String DEFAULT_DESTINATION_PORT = "8082";
-   private static final String DEFAULT_KAFKA_TOPIC = "topic.J2735TimBroadcastJson";
+   private static final String DEFAULT_DESTINATION_ENDPOINT = "sdw";
 
    @Autowired
    private Environment environment;
 
-   private String destinationUrl;
+   private String groupId;
+
    private String kafkaBrokers;
    private String subscriptionTopic;
+
+   private String destinationProtocol;
+   private String destinationUrl;
    private String destinationPort;
+   private String destinationEndpoint;
 
    public DepositorProperties() {
 
@@ -41,18 +51,26 @@ public class DepositorProperties implements EnvironmentAware {
 
          if (dockerIp == null) {
             logger.warn(
-                  "Neither ode.kafkaBrokers ode property nor DOCKER_HOST_IP environment variable are defined. Defaulting to localhost.");
+                  "Neither sdw.kafkaBrokers ode property nor DOCKER_HOST_IP environment variable are defined. Defaulting to localhost.");
             dockerIp = "localhost";
          }
          setKafkaBrokers(dockerIp + ":" + DEFAULT_KAFKA_PORT);
       }
 
+      if (getGroupId() == null)
+         setGroupId(DEFAULT_GROUP_ID);
+
+      if (getSubscriptionTopic() == null)
+         setSubscriptionTopic(DEFAULT_KAFKA_SUBSCRIPTION_TOPIC);
+      if (getDestinationProtocol() == null)
+         setDestinationProtocol(DEFAULT_DESTINATION_PROTOCOL);
       if (getDestinationUrl() == null)
          setDestinationUrl(DEFAULT_DESTINATION_URL);
       if (getDestinationPort() == null)
          setDestinationPort(DEFAULT_DESTINATION_PORT);
-      if (getSubscriptionTopic() == null)
-         setSubscriptionTopic(DEFAULT_KAFKA_TOPIC);
+      if (getDestinationEndpoint() == null)
+         setDestinationEndpoint(DEFAULT_DESTINATION_ENDPOINT);
+
    }
 
    @Override
@@ -94,5 +112,29 @@ public class DepositorProperties implements EnvironmentAware {
 
    public void setDestinationPort(String destinationPort) {
       this.destinationPort = destinationPort;
+   }
+
+   public String getDestinationProtocol() {
+      return destinationProtocol;
+   }
+
+   public void setDestinationProtocol(String destinationProtocol) {
+      this.destinationProtocol = destinationProtocol;
+   }
+
+   public String getDestinationEndpoint() {
+      return destinationEndpoint;
+   }
+
+   public void setDestinationEndpoint(String destinationEndpoint) {
+      this.destinationEndpoint = destinationEndpoint;
+   }
+
+   public String getGroupId() {
+      return groupId;
+   }
+
+   public void setGroupId(String groupId) {
+      this.groupId = groupId;
    }
 }

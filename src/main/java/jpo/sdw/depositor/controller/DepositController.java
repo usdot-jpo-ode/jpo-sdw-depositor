@@ -20,11 +20,17 @@ public class DepositController {
       KafkaConsumer<String, String> kafkaConsumer = KafkaConsumerFactory
             .createConsumer(depositorProperties.getKafkaBrokers());
 
-      SDWDepositor sdwDepositor = new SDWDepositor(new RestTemplate(),
-            new URI("http://" + depositorProperties.getDestinationUrl()+":"+depositorProperties.getDestinationPort()+"/sdw"));
+      URI destUri = assembleDestinationUri(depositorProperties);
+
+      SDWDepositor sdwDepositor = new SDWDepositor(new RestTemplate(), destUri);
       KafkaConsumerRestDepositor kcrd = new KafkaConsumerRestDepositor(kafkaConsumer, sdwDepositor);
 
       kcrd.run(depositorProperties.getSubscriptionTopic());
+   }
+
+   private URI assembleDestinationUri(DepositorProperties dp) throws URISyntaxException {
+      return new URI(String.format("%s//%s:%s/%s", dp.getDestinationProtocol(), dp.getDestinationUrl(),
+            dp.getDestinationPort(), dp.getDestinationEndpoint()));
    }
 
 }
