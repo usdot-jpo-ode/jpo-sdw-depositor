@@ -11,6 +11,8 @@ This is a submodule of the [jpo-ode](https://github.com/usdot-jpo-ode/jpo-ode) r
 
 ## Configuration
 
+You may configure these values in `jpo-sdw-depositor/src/main/resources/application.properties` or by editing them in the `sample.env` file then renaming the file to `.env`
+
 | Value in `application.properties` | Value as env var (in sample.env) | Description                                           | Example Value               |
 |-----------------------------------|----------------------------------|-------------------------------------------------------|-----------------------------|
 | sdw.groupId                       | SDW_GROUP_ID                     | The Kafka group id to be used for message consumption | usdot.jpo.sdw               |
