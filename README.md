@@ -50,3 +50,5 @@ You may configure these values in `jpo-sdw-depositor/src/main/resources/applicat
 | sdw.kafkaPort                     | SDW_KAFKA_PORT                   | Port of the Kafka instance                            | 9092                        |
 | sdw.subscriptionTopic             | SDW_SUBSCRIPTION_TOPIC           | Kafka topic to listen to                              | topic.J2735TimBroadcastJson |
 | sdw.destinationUrl                | SDW_DESTINATION_URL              | Full path of the SDW server address                   | 127.0.0.1                   |
+| sdw.username                | SDW_USERNAME              | SDW HTTP basic auth username                  | (n/a)  
+| sdw.password                | SDW_PASSWORD             | SDW HTTP basic auth password                  | (n/a)  
