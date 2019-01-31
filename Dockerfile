@@ -4,11 +4,11 @@ MAINTAINER 583114@bah.com
 
 WORKDIR /home
 
-COPY pom.xml .
-RUN mvn -B dependency:resolve-plugins dependency:resolve
+COPY ./pom.xml .
+RUN mvn dependency:resolve dependency:resolve-plugins -Dmaven.repo.local=/mvn/.m2nrepo/repository
 
 COPY ./src ./src
-RUN mvn package
+RUN mvn package -DskipTests -Dmaven.repo.local=/mvn/.m2nrepo/repository
 
 # Run container
 FROM openjdk:8u171-jre-alpine
