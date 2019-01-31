@@ -21,10 +21,7 @@ public class DepositorProperties implements EnvironmentAware {
    private static final String DEFAULT_KAFKA_PORT = "9092";
    private static final String DEFAULT_KAFKA_SUBSCRIPTION_TOPIC = "topic.J2735TimBroadcastJson";
 
-   private static final String DEFAULT_DESTINATION_PROTOCOL = "http";
-   private static final String DEFAULT_DESTINATION_URL = "localhost";
-   private static final String DEFAULT_DESTINATION_PORT = "8082";
-   private static final String DEFAULT_DESTINATION_ENDPOINT = "sdw";
+   private static final String DEFAULT_DESTINATION_URL = "http://localhost:8082/sdw";
 
    @Autowired
    private Environment environment;
@@ -34,13 +31,18 @@ public class DepositorProperties implements EnvironmentAware {
    private String kafkaBrokers;
    private String subscriptionTopic;
 
-   private String destinationProtocol;
+   private String username;
+   private String password;
+
    private String destinationUrl;
-   private String destinationPort;
-   private String destinationEndpoint;
 
    @PostConstruct
    void initialize() {
+
+      logger.info("Values: {} {} {} {}", groupId, kafkaBrokers, subscriptionTopic, destinationUrl);
+      if (getGroupId() == null)
+         setGroupId(DEFAULT_GROUP_ID);
+
       if (getKafkaBrokers() == null) {
          String dockerIp = System.getenv("DOCKER_HOST_IP");
          logger.info("sdw.kafkaBrokers property not defined. Will try DOCKER_HOST_IP => {}", dockerIp);
@@ -52,20 +54,21 @@ public class DepositorProperties implements EnvironmentAware {
          }
          setKafkaBrokers(dockerIp + ":" + DEFAULT_KAFKA_PORT);
       }
-
-      if (getGroupId() == null)
-         setGroupId(DEFAULT_GROUP_ID);
-
       if (getSubscriptionTopic() == null)
          setSubscriptionTopic(DEFAULT_KAFKA_SUBSCRIPTION_TOPIC);
-      if (getDestinationProtocol() == null)
-         setDestinationProtocol(DEFAULT_DESTINATION_PROTOCOL);
+
+      if (getUsername() == null) {
+         logger.error("No username specified in configuration");
+         throw new IllegalArgumentException("No username specified in configuration");
+      }
+
+      if (getPassword() == null) {
+         logger.error("No password specified in configuration");
+         throw new IllegalArgumentException("No password specified in configuration");
+      }
+
       if (getDestinationUrl() == null)
          setDestinationUrl(DEFAULT_DESTINATION_URL);
-      if (getDestinationPort() == null)
-         setDestinationPort(DEFAULT_DESTINATION_PORT);
-      if (getDestinationEndpoint() == null)
-         setDestinationEndpoint(DEFAULT_DESTINATION_ENDPOINT);
 
    }
 
@@ -102,35 +105,27 @@ public class DepositorProperties implements EnvironmentAware {
       this.subscriptionTopic = subscriptionTopic;
    }
 
-   public String getDestinationPort() {
-      return destinationPort;
-   }
-
-   public void setDestinationPort(String destinationPort) {
-      this.destinationPort = destinationPort;
-   }
-
-   public String getDestinationProtocol() {
-      return destinationProtocol;
-   }
-
-   public void setDestinationProtocol(String destinationProtocol) {
-      this.destinationProtocol = destinationProtocol;
-   }
-
-   public String getDestinationEndpoint() {
-      return destinationEndpoint;
-   }
-
-   public void setDestinationEndpoint(String destinationEndpoint) {
-      this.destinationEndpoint = destinationEndpoint;
-   }
-
    public String getGroupId() {
       return groupId;
    }
 
    public void setGroupId(String groupId) {
       this.groupId = groupId;
+   }
+
+   public String getUsername() {
+      return username;
+   }
+
+   public void setUsername(String sdwUsername) {
+      this.username = sdwUsername;
+   }
+
+   public String getPassword() {
+      return password;
+   }
+
+   public void setPassword(String sdwPassword) {
+      this.password = sdwPassword;
    }
 }

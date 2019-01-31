@@ -5,17 +5,24 @@ import java.util.Arrays;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import jpo.sdw.depositor.DepositorProperties;
 import jpo.sdw.depositor.depositors.RestDepositor;
 
 public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
+
+   @Autowired
+   DepositorProperties depositorProperties;
 
    public static class LoopController {
       private LoopController() {
          throw new UnsupportedOperationException();
       }
+
       public static boolean loop() {
          return true;
       }
@@ -43,9 +50,14 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
             String value = record.value();
             String destination = this.getRestDepositor().getDestination().toString();
 
+            JSONObject jsonMsg = new JSONObject();
+            jsonMsg.put("systemDepositName", "string");
+            jsonMsg.put("encodeType", "hex");
+            jsonMsg.put("encodedMsg", value);
+
             logger.info("Depositing message to {} KafkaOffset = {}, KafkaKey = {}, MessageValue = {}", destination,
                   offset, key, value);
-            this.getRestDepositor().deposit(record.value());
+            this.getRestDepositor().deposit(jsonMsg.toString());
          }
       }
    }

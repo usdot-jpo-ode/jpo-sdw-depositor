@@ -12,16 +12,33 @@ import java.lang.reflect.Modifier;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.junit.Test;
 
+import jpo.sdw.depositor.DepositorProperties;
 import mockit.Capturing;
+import mockit.Expectations;
+import mockit.Mocked;
 
 public class KafkaConsumerFactoryTest {
 
    @Capturing
    KafkaConsumer<?, ?> capturingKafkaConsumer;
 
+   @Mocked
+   DepositorProperties mockedDepositorProperties;
+
    @Test
    public void createConsumerShouldCreateConsumer() {
-      assertNotNull(KafkaConsumerFactory.createConsumer("testKafkaBrokersString"));
+      new Expectations() {
+         {
+            // These are required because Properties throws NPE when values are null
+            mockedDepositorProperties.getKafkaBrokers();
+            result = "kafkaBrokers";
+
+            mockedDepositorProperties.getGroupId();
+            result = "groupId";
+
+         }
+      };
+      assertNotNull(KafkaConsumerFactory.createConsumer(mockedDepositorProperties));
    }
 
    @Test

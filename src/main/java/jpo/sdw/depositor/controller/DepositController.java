@@ -2,8 +2,12 @@ package jpo.sdw.depositor.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,18 +21,20 @@ public class DepositController {
    @Autowired
    public DepositController(DepositorProperties depositorProperties) throws URISyntaxException {
 
-      URI destUri = assembleDestinationUri(depositorProperties);
-      SDWDepositor sdwDepositor = new SDWDepositor(new RestTemplate(), destUri);
+      List<ClientHttpRequestInterceptor> authHeaders = new ArrayList<ClientHttpRequestInterceptor>();
+      authHeaders.add(new BasicAuthorizationInterceptor(depositorProperties.getUsername(),
+            depositorProperties.getPassword()));
+
+      RestTemplate basicAuthRestTemplate = new RestTemplate();
+      basicAuthRestTemplate.setInterceptors(authHeaders);
+
+      SDWDepositor sdwDepositor = new SDWDepositor(basicAuthRestTemplate,
+            new URI(depositorProperties.getDestinationUrl()));
 
       KafkaConsumerRestDepositor kcrd = new KafkaConsumerRestDepositor(
-            KafkaConsumerFactory.createConsumer(depositorProperties.getKafkaBrokers()), sdwDepositor);
+            KafkaConsumerFactory.createConsumer(depositorProperties), sdwDepositor);
 
       kcrd.run(depositorProperties.getSubscriptionTopic());
-   }
-
-   private URI assembleDestinationUri(DepositorProperties dp) throws URISyntaxException {
-      return new URI(String.format("%s//%s:%s/%s", dp.getDestinationProtocol(), dp.getDestinationUrl(),
-            dp.getDestinationPort(), dp.getDestinationEndpoint()));
    }
 
 }
