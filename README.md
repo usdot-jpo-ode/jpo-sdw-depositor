@@ -1,5 +1,7 @@
 # jpo-sdw-depositor
 
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=usdot.jpo.ode%3Ajpo-sdw-depositor%3Adev)](https://sonarcloud.io/dashboard?id=usdot.jpo.ode%3Ajpo-sdw-depositor%3Adev)
+
 Subscribes to a Kafka topic and deposits messages to the SDW.
 
 ## Overview
