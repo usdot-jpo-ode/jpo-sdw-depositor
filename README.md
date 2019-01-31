@@ -1,6 +1,8 @@
 # jpo-sdw-depositor
 
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=usdot.jpo.ode%3Ajpo-sdw-depositor%3Adev)](https://sonarcloud.io/dashboard?id=usdot.jpo.ode%3Ajpo-sdw-depositor%3Adev)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot.jpo.ode%3Ajpo-sdw-depositor%3Adev&metric=alert_status)](https://sonarcloud.io/dashboard?id=usdot.jpo.ode%3Ajpo-sdw-depositor%3Adev)
+
+[![Build Status](https://travis-ci.org/usdot-jpo-ode/jpo-sdw-depositor.svg?branch=dev)](https://travis-ci.org/usdot-jpo-ode/jpo-sdw-depositor)
 
 Subscribes to a Kafka topic and deposits messages to the SDW.
 
