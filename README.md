@@ -6,7 +6,7 @@ Subscribes to a Kafka topic and deposits messages to the SDW.
 
 This is a submodule of the [jpo-ode](https://github.com/usdot-jpo-ode/jpo-ode) repository. It subscribes to a Kafka topic and listens for incoming messages. Upon message arrival, this application deposits it over REST to the Situation Data Warehouse.
 
-## Installation
+## Installation and Operation
 
 ### Requirements
 
@@ -32,6 +32,7 @@ docker run --rm  --env-file .env jpo-sdw-depositor:latest
 
 Use this option when you want to run this module in conjuction with the [jpo-ode](https://github.com/usdot-jpo-ode/jpo-ode). The only action you must take here is to set the configuration properties in the env file. See the bottom of this README for a reference.
 
+##
 
 ## Configuration Reference
 
