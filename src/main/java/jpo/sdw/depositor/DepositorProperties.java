@@ -18,7 +18,7 @@ public class DepositorProperties implements EnvironmentAware {
 
    private static final String DEFAULT_GROUP_ID = "usdot.jpo.sdw";
    private static final String DEFAULT_KAFKA_PORT = "9092";
-   private static final String DEFAULT_DESTINATION_URL = "http://localhost:8082/sdw";
+   private static final String DEFAULT_DESTINATION_URL = "https://webapp-integration.cvmvp.com/whtools/rest/v2/";
    private static final String DEFAULT_ENCODE_TYPE = "hex";
 
    @Autowired

@@ -16,7 +16,7 @@ public class DepositorPropertiesTest {
    Environment mockEnvironment;
 
    @Test
-   public void testAllValuesAlreadySet() {
+   public void testAllValuesAlreadySetOneTopic() {
 
       String expectedKafkaBrokers = "testKafkaBrokers";
       String[] expectedSubscriptionTopics = { "testSubscriptionTopic" };
@@ -48,8 +48,44 @@ public class DepositorPropertiesTest {
    }
 
    @Test
-   public void testDefaults() {
+   public void testAllValuesAlreadySetMultipleTopics() {
 
+      String expectedKafkaBrokers = "testKafkaBrokers";
+      String[] expectedSubscriptionTopics = { "testSubscriptionTopic0", "testSubscriptionTopic1",
+            "testSubscriptionTopic2" };
+      String expectedDestinationUrl = "testDestinationUrl";
+      String expectedGroupId = "testGroupId";
+      String expectedUsername = "testUsername";
+      String expectedPassword = "testPassword";
+
+      DepositorProperties testDepositorProperties = new DepositorProperties();
+
+      testDepositorProperties.setKafkaBrokers(expectedKafkaBrokers);
+      testDepositorProperties.setSubscriptionTopics(expectedSubscriptionTopics);
+      testDepositorProperties.setDestinationUrl(expectedDestinationUrl);
+      testDepositorProperties.setGroupId(expectedGroupId);
+      testDepositorProperties.setEnvironment(mockEnvironment);
+      testDepositorProperties.setUsername(expectedUsername);
+      testDepositorProperties.setPassword(expectedPassword);
+
+      testDepositorProperties.initialize();
+
+      assertEquals("Incorrect kafkaBrokers", expectedKafkaBrokers, testDepositorProperties.getKafkaBrokers());
+      assertEquals("Incorrect subscriptionTopic0", expectedSubscriptionTopics[0],
+            testDepositorProperties.getSubscriptionTopics()[0]);
+      assertEquals("Incorrect subscriptionTopic1", expectedSubscriptionTopics[1],
+            testDepositorProperties.getSubscriptionTopics()[1]);
+      assertEquals("Incorrect subscriptionTopic2", expectedSubscriptionTopics[2],
+            testDepositorProperties.getSubscriptionTopics()[2]);
+      assertEquals("Incorrect destinationUrl", expectedDestinationUrl, testDepositorProperties.getDestinationUrl());
+      assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
+      assertNotNull("No environment", testDepositorProperties.getEnvironment());
+      assertEquals("Incorrect username", expectedUsername, testDepositorProperties.getUsername());
+      assertEquals("Incorrect password", expectedPassword, testDepositorProperties.getPassword());
+   }
+
+   @Test
+   public void testDefaults() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
       testDepositorProperties.setUsername("uuuuuuuu");

@@ -34,8 +34,8 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
       this.setKafkaConsumer(kafkaConsumer);
       this.setRestDepositor(restDepositor);
       this.jsonMsg = new JSONObject();
-      this.jsonMsg.put("systemDepositName", "string");
-      this.jsonMsg.put("systemDepositName", encodeType);
+      this.jsonMsg.put("systemDepositName", "SDW 2.3");
+      this.jsonMsg.put("encodeType", encodeType);
    }
 
    @Override
