@@ -17,29 +17,26 @@ public class DepositorProperties implements EnvironmentAware {
    private static final Logger logger = LoggerFactory.getLogger(DepositorProperties.class);
 
    private static final String DEFAULT_GROUP_ID = "usdot.jpo.sdw";
-
    private static final String DEFAULT_KAFKA_PORT = "9092";
-   private static final String DEFAULT_KAFKA_SUBSCRIPTION_TOPIC = "topic.J2735TimBroadcastJson";
-
    private static final String DEFAULT_DESTINATION_URL = "http://localhost:8082/sdw";
+   private static final String DEFAULT_ENCODE_TYPE = "hex";
 
    @Autowired
    private Environment environment;
 
    private String groupId;
+   private String encodeType;
 
    private String kafkaBrokers;
-   private String subscriptionTopic;
+   private String[] subscriptionTopics;
 
    private String username;
    private String password;
-
    private String destinationUrl;
 
    @PostConstruct
    void initialize() {
 
-      logger.info("Values: {} {} {} {}", groupId, kafkaBrokers, subscriptionTopic, destinationUrl);
       if (getGroupId() == null)
          setGroupId(DEFAULT_GROUP_ID);
 
@@ -54,9 +51,18 @@ public class DepositorProperties implements EnvironmentAware {
          }
          setKafkaBrokers(dockerIp + ":" + DEFAULT_KAFKA_PORT);
       }
-      if (getSubscriptionTopic() == null)
-         setSubscriptionTopic(DEFAULT_KAFKA_SUBSCRIPTION_TOPIC);
-
+      
+      if (getEncodeType() == null)
+         setEncodeType(DEFAULT_ENCODE_TYPE);
+      
+      if (getDestinationUrl() == null)
+         setDestinationUrl(DEFAULT_DESTINATION_URL);
+      
+      if (getSubscriptionTopics() == null || getSubscriptionTopics().length == 0) {
+         logger.error("No Kafka subscription topics specified in configuration");
+         throw new IllegalArgumentException("No Kafka subscription topics specified in configuration");
+      }
+      
       if (getUsername() == null) {
          logger.error("No username specified in configuration");
          throw new IllegalArgumentException("No username specified in configuration");
@@ -66,10 +72,6 @@ public class DepositorProperties implements EnvironmentAware {
          logger.error("No password specified in configuration");
          throw new IllegalArgumentException("No password specified in configuration");
       }
-
-      if (getDestinationUrl() == null)
-         setDestinationUrl(DEFAULT_DESTINATION_URL);
-
    }
 
    @Override
@@ -97,12 +99,12 @@ public class DepositorProperties implements EnvironmentAware {
       this.kafkaBrokers = kafkaBrokers;
    }
 
-   public String getSubscriptionTopic() {
-      return subscriptionTopic;
+   public String[] getSubscriptionTopics() {
+      return subscriptionTopics;
    }
 
-   public void setSubscriptionTopic(String subscriptionTopic) {
-      this.subscriptionTopic = subscriptionTopic;
+   public void setSubscriptionTopics(String[] subscriptionTopics) {
+      this.subscriptionTopics = subscriptionTopics;
    }
 
    public String getGroupId() {
@@ -127,5 +129,13 @@ public class DepositorProperties implements EnvironmentAware {
 
    public void setPassword(String sdwPassword) {
       this.password = sdwPassword;
+   }
+
+   public String getEncodeType() {
+      return encodeType;
+   }
+
+   public void setEncodeType(String encodeType) {
+      this.encodeType = encodeType;
    }
 }

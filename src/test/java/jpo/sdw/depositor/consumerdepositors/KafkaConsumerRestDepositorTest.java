@@ -18,7 +18,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.junit.Test;
 
-import jpo.sdw.depositor.DepositorProperties;
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor.LoopController;
 import jpo.sdw.depositor.depositors.RestDepositor;
 import mockit.Capturing;
@@ -37,7 +36,7 @@ public class KafkaConsumerRestDepositorTest {
    @Injectable
    RestDepositor<String> injectableRestDepositor;
    @Injectable
-   DepositorProperties injectableDepositorProperties;
+   String encodeType;
 
    @Mocked
    ConsumerRecord<String, String> mockConsumerRecord;

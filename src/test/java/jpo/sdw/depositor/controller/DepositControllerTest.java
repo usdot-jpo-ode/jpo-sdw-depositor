@@ -31,7 +31,7 @@ public class DepositControllerTest {
    public void shouldRun() throws URISyntaxException {
       new Expectations() {
          {
-            capturingKafkaConsumerRestDepositor.run(anyString);
+            capturingKafkaConsumerRestDepositor.run((String[]) any);
             times = 1;
          }
       };

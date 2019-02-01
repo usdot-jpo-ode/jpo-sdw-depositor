@@ -8,15 +8,10 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import jpo.sdw.depositor.DepositorProperties;
 import jpo.sdw.depositor.depositors.RestDepositor;
 
 public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
-
-   @Autowired
-   DepositorProperties depositorProperties;
 
    public static class LoopController {
       private LoopController() {
@@ -32,31 +27,25 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
 
    private RestDepositor<String> restDepositor;
    private KafkaConsumer<String, String> kafkaConsumer;
+   private JSONObject jsonMsg;
 
-   public KafkaConsumerRestDepositor(KafkaConsumer<String, String> kafkaConsumer, RestDepositor<String> restDepositor) {
+   public KafkaConsumerRestDepositor(KafkaConsumer<String, String> kafkaConsumer, RestDepositor<String> restDepositor,
+         String encodeType) {
       this.setKafkaConsumer(kafkaConsumer);
       this.setRestDepositor(restDepositor);
+      this.jsonMsg = new JSONObject();
+      this.jsonMsg.put("systemDepositName", "string");
+      this.jsonMsg.put("systemDepositName", encodeType);
    }
 
    @Override
-   public void run(String topic) {
-      this.getKafkaConsumer().subscribe(Arrays.asList(topic));
+   public void run(String... topics) {
+      this.getKafkaConsumer().subscribe(Arrays.asList(topics));
       while (LoopController.loop()) { // NOSONAR (used for unit testing)
          ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(100);
          for (ConsumerRecord<String, String> record : records) {
-
-            long offset = record.offset();
-            String key = record.key();
-            String value = record.value();
-            String destination = this.getRestDepositor().getDestination().toString();
-
-            JSONObject jsonMsg = new JSONObject();
-            jsonMsg.put("systemDepositName", "string");
-            jsonMsg.put("encodeType", "hex");
-            jsonMsg.put("encodedMsg", value);
-
-            logger.info("Depositing message to {} KafkaOffset = {}, KafkaKey = {}, MessageValue = {}", destination,
-                  offset, key, value);
+            logger.debug("Publishing message {}", record);
+            this.jsonMsg.put("encodedMsg", record.value());
             this.getRestDepositor().deposit(jsonMsg.toString());
          }
       }

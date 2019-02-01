@@ -22,8 +22,8 @@ public class DepositController {
    public DepositController(DepositorProperties depositorProperties) throws URISyntaxException {
 
       List<ClientHttpRequestInterceptor> authHeaders = new ArrayList<ClientHttpRequestInterceptor>();
-      authHeaders.add(new BasicAuthorizationInterceptor(depositorProperties.getUsername(),
-            depositorProperties.getPassword()));
+      authHeaders.add(
+            new BasicAuthorizationInterceptor(depositorProperties.getUsername(), depositorProperties.getPassword()));
 
       RestTemplate basicAuthRestTemplate = new RestTemplate();
       basicAuthRestTemplate.setInterceptors(authHeaders);
@@ -32,9 +32,10 @@ public class DepositController {
             new URI(depositorProperties.getDestinationUrl()));
 
       KafkaConsumerRestDepositor kcrd = new KafkaConsumerRestDepositor(
-            KafkaConsumerFactory.createConsumer(depositorProperties), sdwDepositor);
+            KafkaConsumerFactory.createConsumer(depositorProperties), sdwDepositor,
+            depositorProperties.getEncodeType());
 
-      kcrd.run(depositorProperties.getSubscriptionTopic());
+      kcrd.run(depositorProperties.getSubscriptionTopics());
    }
 
 }

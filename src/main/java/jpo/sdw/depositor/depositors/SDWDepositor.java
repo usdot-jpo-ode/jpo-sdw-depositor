@@ -18,11 +18,10 @@ public class SDWDepositor extends RestDepositor<String> {
 
    @Override
    public void deposit(String message) {
-
       try {
          ResponseEntity<String> result = this.getRestTemplate().postForEntity(this.getDestination(), message,
                String.class);
-         logger.info("Response received. Status: {}, Body: {}", result.getStatusCode(), result.getBody());
+         logger.debug("Response received. Status: {}, Body: {}", result.getStatusCode(), result.getBody());
       } catch (ResourceAccessException e) {
          logger.error("Failed to send message to destination", e);
       }
