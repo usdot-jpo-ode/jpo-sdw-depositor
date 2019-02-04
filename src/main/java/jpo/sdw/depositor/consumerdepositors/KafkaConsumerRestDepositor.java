@@ -41,10 +41,14 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
    @Override
    public void run(String... topics) {
       this.getKafkaConsumer().subscribe(Arrays.asList(topics));
+
+      logger.info("KafkaConsumerRestDepositor started listening on topic(s) <{}> to destination URL <{}>",
+            this.getKafkaConsumer().listTopics(), this.getRestDepositor().getDestination());
+
       while (LoopController.loop()) { // NOSONAR (used for unit testing)
          ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(100);
          for (ConsumerRecord<String, String> record : records) {
-            logger.debug("Publishing message {}", record);
+            logger.info("Publishing message {}", record);
             this.jsonMsg.put("encodedMsg", record.value());
             this.getRestDepositor().deposit(jsonMsg.toString());
          }
