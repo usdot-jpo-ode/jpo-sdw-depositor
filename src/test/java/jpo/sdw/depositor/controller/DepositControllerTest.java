@@ -11,7 +11,6 @@ import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor;
 import mockit.Capturing;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mocked;
 import mockit.Tested;
 
 public class DepositControllerTest {
@@ -31,9 +30,6 @@ public class DepositControllerTest {
    BasicAuthorizationInterceptor capturingBasicAuthorizationInterceptor;
    @Capturing
    URI capturingURI;
-
-   @Mocked
-   BasicAuthorizationInterceptor mockBasicAuthorizationInterceptor;
 
    @Test
    public void shouldRun() throws URISyntaxException {
