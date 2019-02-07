@@ -2,13 +2,12 @@
 FROM maven:3.5.4-jdk-8-alpine as builder
 MAINTAINER 583114@bah.com
 
+VOLUME /root/.m2
+
 WORKDIR /home
 
-COPY ./pom.xml .
-RUN mvn dependency:resolve dependency:resolve-plugins -Dmaven.repo.local=/mvn/.m2nrepo/repository
-
-COPY ./src ./src
-RUN mvn package -DskipTests -Dmaven.repo.local=/mvn/.m2nrepo/repository
+COPY . .
+RUN mvn clean package -DskipTests
 
 # Run container
 FROM openjdk:8u171-jre-alpine

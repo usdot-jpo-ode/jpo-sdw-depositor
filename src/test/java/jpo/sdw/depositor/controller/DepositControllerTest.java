@@ -41,5 +41,4 @@ public class DepositControllerTest {
       };
       testDepositController.run();
    }
-
 }
