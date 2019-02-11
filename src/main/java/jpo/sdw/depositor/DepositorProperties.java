@@ -47,7 +47,7 @@ public class DepositorProperties implements EnvironmentAware {
          if (dockerIp == null) {
             logger.warn(
                   "Neither sdw.kafkaBrokers ode property nor DOCKER_HOST_IP environment variable are defined. Defaulting to localhost.");
-            dockerIp = DEFAULT_DESTINATION_URL;
+            dockerIp = "localhost";
          }
          setKafkaBrokers(dockerIp + ":" + DEFAULT_KAFKA_PORT);
       }
