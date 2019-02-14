@@ -5,22 +5,28 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import jpo.sdw.depositor.DepositorProperties;
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor;
 import jpo.sdw.depositor.depositors.SDWDepositor;
 
-@Controller
+@Component
 public class DepositController {
 
    private static final Logger logger = LoggerFactory.getLogger(DepositController.class);
+
+   private KafkaConsumerRestDepositor kafkaConsumerRestDepositor;
+
+   private DepositorProperties depositorProperties;
 
    @Autowired
    public DepositController(DepositorProperties depositorProperties) throws URISyntaxException {
@@ -35,13 +41,19 @@ public class DepositController {
       SDWDepositor sdwDepositor = new SDWDepositor(basicAuthRestTemplate,
             new URI(depositorProperties.getDestinationUrl()));
 
-      KafkaConsumerRestDepositor kcrd = new KafkaConsumerRestDepositor(
+      this.kafkaConsumerRestDepositor = new KafkaConsumerRestDepositor(
             KafkaConsumerFactory.createConsumer(depositorProperties), sdwDepositor,
             depositorProperties.getEncodeType());
+      
+      this.depositorProperties = depositorProperties;
+   }
 
+   @PostConstruct
+   public void run() {
       logger.info("Starting KafkaConsumerRestDepositor listening to topic(s): <{}> and forwarding to SDW at URL: <{}>",
             depositorProperties.getSubscriptionTopics(), depositorProperties.getDestinationUrl());
-      kcrd.run(depositorProperties.getSubscriptionTopics());
+
+      kafkaConsumerRestDepositor.run(depositorProperties.getSubscriptionTopics());
    }
 
 }

@@ -11,8 +11,12 @@ import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor;
 import mockit.Capturing;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Tested;
 
 public class DepositControllerTest {
+
+   @Tested
+   DepositController testDepositController;
 
    @Injectable
    DepositorProperties injectableDepositorProperties;
@@ -35,7 +39,6 @@ public class DepositControllerTest {
             times = 1;
          }
       };
-      new DepositController(injectableDepositorProperties);
+      testDepositController.run();
    }
-
 }

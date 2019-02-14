@@ -4,11 +4,11 @@ MAINTAINER 583114@bah.com
 
 WORKDIR /home
 
-COPY ./pom.xml .
-RUN mvn dependency:resolve dependency:resolve-plugins -Dmaven.repo.local=/mvn/.m2nrepo/repository
-
+# Copy only the files needed to avoid putting all sorts of junk from your local env on to the image
+COPY ./pom.xml ./
 COPY ./src ./src
-RUN mvn package -DskipTests -Dmaven.repo.local=/mvn/.m2nrepo/repository
+
+RUN mvn clean package -DskipTests
 
 # Run container
 FROM openjdk:8u171-jre-alpine
