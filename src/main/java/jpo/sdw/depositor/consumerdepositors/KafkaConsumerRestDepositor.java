@@ -44,7 +44,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
       while (LoopController.loop()) { // NOSONAR (used for unit testing)
          ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(100);
          for (ConsumerRecord<String, String> record : records) {
-            logger.info("Publishing message {}", record);
+            logger.info("Depositing message {}", record);
             this.jsonMsg.put("encodedMsg", record.value());
             this.getRestDepositor().deposit(jsonMsg.toString());
          }

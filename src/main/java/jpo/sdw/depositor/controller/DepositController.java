@@ -37,7 +37,7 @@ public class DepositController {
 
       RestTemplate basicAuthRestTemplate = new RestTemplate();
       basicAuthRestTemplate.setInterceptors(authHeaders);
-
+      
       SDWDepositor sdwDepositor = new SDWDepositor(basicAuthRestTemplate,
             new URI(depositorProperties.getDestinationUrl()));
 

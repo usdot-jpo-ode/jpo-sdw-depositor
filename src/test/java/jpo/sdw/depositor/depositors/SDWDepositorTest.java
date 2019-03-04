@@ -3,6 +3,7 @@ package jpo.sdw.depositor.depositors;
 import java.net.URI;
 
 import org.junit.Test;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,7 +32,7 @@ public class SDWDepositorTest {
 
       new Expectations() {
          {
-            injectableRestTemplate.postForEntity(injectableURI, "testRequestBody", String.class);
+            injectableRestTemplate.postForEntity(injectableURI, (HttpEntity<?>) any, String.class);
             result = new ResourceAccessException("testException123");
          }
       };
