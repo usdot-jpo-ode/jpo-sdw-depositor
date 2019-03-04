@@ -132,6 +132,7 @@ public class DepositorPropertiesTest {
       DepositorProperties testDepositorProperties = new DepositorProperties();
       testDepositorProperties.setUsername("uuuuuuuu");
       testDepositorProperties.setPassword("pppppppp");
+      testDepositorProperties.setSubscriptionTopics(null);
       try {
          testDepositorProperties.initialize();
          fail("Expected IllegalArgumentException");
