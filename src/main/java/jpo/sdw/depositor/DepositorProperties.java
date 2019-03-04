@@ -18,7 +18,7 @@ public class DepositorProperties implements EnvironmentAware {
 
    private static final String DEFAULT_GROUP_ID = "usdot.jpo.sdw";
    private static final String DEFAULT_KAFKA_PORT = "9092";
-   private static final String DEFAULT_DESTINATION_URL = "https://webapp-integration.cvmvp.com/whtools/rest/v2/";
+   private static final String DEFAULT_DESTINATION_URL = "https://webapp-integration.cvmvp.com/whtools/rest/v2/deposit";
    private static final String DEFAULT_ENCODE_TYPE = "hex";
 
    @Autowired
@@ -28,7 +28,7 @@ public class DepositorProperties implements EnvironmentAware {
    private String encodeType;
 
    private String kafkaBrokers;
-   private String[] subscriptionTopics;
+   private String[] subscriptionTopics = {"topic.SDWDepositorInput"};
 
    private String username;
    private String password;
@@ -54,10 +54,10 @@ public class DepositorProperties implements EnvironmentAware {
       
       if (getEncodeType() == null)
          setEncodeType(DEFAULT_ENCODE_TYPE);
-      
+
       if (getDestinationUrl() == null)
          setDestinationUrl(DEFAULT_DESTINATION_URL);
-      
+
       if (getSubscriptionTopics() == null || getSubscriptionTopics().length == 0) {
          logger.error("No Kafka subscription topics specified in configuration");
          throw new IllegalArgumentException("No Kafka subscription topics specified in configuration");
