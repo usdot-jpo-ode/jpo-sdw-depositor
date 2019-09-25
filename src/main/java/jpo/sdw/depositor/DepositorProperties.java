@@ -18,7 +18,7 @@ public class DepositorProperties implements EnvironmentAware {
 
    private static final String DEFAULT_GROUP_ID = "usdot.jpo.sdw";
    private static final String DEFAULT_KAFKA_PORT = "9092";
-   private static final String DEFAULT_DESTINATION_URL = "https://webapp-integration.cvmvp.com/whtools/rest/v2/deposit";
+   private static final String DEFAULT_DESTINATION_URL = "https://sdx-service.trihydro.com/api/deposit";
    private static final String DEFAULT_ENCODE_TYPE = "hex";
 
    @Autowired
@@ -30,8 +30,7 @@ public class DepositorProperties implements EnvironmentAware {
    private String kafkaBrokers;
    private String[] subscriptionTopics = {"topic.SDWDepositorInput"};
 
-   private String username;
-   private String password;
+   private String apiKey;
    private String destinationUrl;
 
    @PostConstruct
@@ -63,14 +62,9 @@ public class DepositorProperties implements EnvironmentAware {
          throw new IllegalArgumentException("No Kafka subscription topics specified in configuration");
       }
       
-      if (getUsername() == null) {
-         logger.error("No username specified in configuration");
-         throw new IllegalArgumentException("No username specified in configuration");
-      }
-
-      if (getPassword() == null) {
-         logger.error("No password specified in configuration");
-         throw new IllegalArgumentException("No password specified in configuration");
+      if(getApiKey() == null){
+            logger.error("No API Key specified in configuration");
+         throw new IllegalArgumentException("No API Key specified in configuration");
       }
    }
 
@@ -115,20 +109,12 @@ public class DepositorProperties implements EnvironmentAware {
       this.groupId = groupId;
    }
 
-   public String getUsername() {
-      return username;
+   public void setApiKey(String apiKey){
+      this.apiKey = apiKey;
    }
-
-   public void setUsername(String sdwUsername) {
-      this.username = sdwUsername;
-   }
-
-   public String getPassword() {
-      return password;
-   }
-
-   public void setPassword(String sdwPassword) {
-      this.password = sdwPassword;
+   
+   public String getApiKey(){
+      return apiKey;
    }
 
    public String getEncodeType() {

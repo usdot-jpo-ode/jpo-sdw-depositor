@@ -22,8 +22,7 @@ public class DepositorPropertiesTest {
       String[] expectedSubscriptionTopics = { "testSubscriptionTopic" };
       String expectedDestinationUrl = "testDestinationUrl";
       String expectedGroupId = "testGroupId";
-      String expectedUsername = "testUsername";
-      String expectedPassword = "testPassword";
+      String expectedApiKey = "apikey1";
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -32,8 +31,7 @@ public class DepositorPropertiesTest {
       testDepositorProperties.setDestinationUrl(expectedDestinationUrl);
       testDepositorProperties.setGroupId(expectedGroupId);
       testDepositorProperties.setEnvironment(mockEnvironment);
-      testDepositorProperties.setUsername(expectedUsername);
-      testDepositorProperties.setPassword(expectedPassword);
+      testDepositorProperties.setApiKey(expectedApiKey);
 
       testDepositorProperties.initialize();
 
@@ -43,8 +41,7 @@ public class DepositorPropertiesTest {
       assertEquals("Incorrect destinationUrl", expectedDestinationUrl, testDepositorProperties.getDestinationUrl());
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
-      assertEquals("Incorrect username", expectedUsername, testDepositorProperties.getUsername());
-      assertEquals("Incorrect password", expectedPassword, testDepositorProperties.getPassword());
+      assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());
    }
 
    @Test
@@ -55,8 +52,7 @@ public class DepositorPropertiesTest {
             "testSubscriptionTopic2" };
       String expectedDestinationUrl = "testDestinationUrl";
       String expectedGroupId = "testGroupId";
-      String expectedUsername = "testUsername";
-      String expectedPassword = "testPassword";
+      String expectedApiKey = "apikey1";
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -65,8 +61,7 @@ public class DepositorPropertiesTest {
       testDepositorProperties.setDestinationUrl(expectedDestinationUrl);
       testDepositorProperties.setGroupId(expectedGroupId);
       testDepositorProperties.setEnvironment(mockEnvironment);
-      testDepositorProperties.setUsername(expectedUsername);
-      testDepositorProperties.setPassword(expectedPassword);
+      testDepositorProperties.setApiKey(expectedApiKey);
 
       testDepositorProperties.initialize();
 
@@ -80,16 +75,14 @@ public class DepositorPropertiesTest {
       assertEquals("Incorrect destinationUrl", expectedDestinationUrl, testDepositorProperties.getDestinationUrl());
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
-      assertEquals("Incorrect username", expectedUsername, testDepositorProperties.getUsername());
-      assertEquals("Incorrect password", expectedPassword, testDepositorProperties.getPassword());
+      assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());
    }
 
    @Test
    public void testDefaults() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setPassword("pppppppp");
+      testDepositorProperties.setApiKey("apikey1");
       testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
 
       testDepositorProperties.initialize();
@@ -100,38 +93,22 @@ public class DepositorPropertiesTest {
    }
 
    @Test
-   public void missingUsernameThrowsException() {
+   public void missingApiKeyThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setPassword("pppppppp");
       testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
       try {
          testDepositorProperties.initialize();
          fail("Expected IllegalArgumentException");
       } catch (Exception e) {
          assertTrue(e instanceof IllegalArgumentException);
-         assertEquals("No username specified in configuration", e.getMessage());
-      }
-   }
-
-   @Test
-   public void missingPasswordThrowsException() {
-      DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
-      try {
-         testDepositorProperties.initialize();
-         fail("Expected IllegalArgumentException");
-      } catch (Exception e) {
-         assertTrue(e instanceof IllegalArgumentException);
-         assertEquals("No password specified in configuration", e.getMessage());
+         assertEquals("No API Key specified in configuration", e.getMessage());
       }
    }
 
    @Test
    public void nullSubscriptionTopicsThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setPassword("pppppppp");
+      testDepositorProperties.setApiKey("apikey1");
       testDepositorProperties.setSubscriptionTopics(null);
       try {
          testDepositorProperties.initialize();
@@ -145,8 +122,7 @@ public class DepositorPropertiesTest {
    @Test
    public void emptySubscriptionTopicsThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setPassword("pppppppp");
+      testDepositorProperties.setApiKey("apikey1");
       testDepositorProperties.setSubscriptionTopics(new String[] {});
       try {
          testDepositorProperties.initialize();

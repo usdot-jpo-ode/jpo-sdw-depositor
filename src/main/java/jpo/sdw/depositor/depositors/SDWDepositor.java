@@ -25,10 +25,11 @@ public class SDWDepositor extends RestDepositor<String> {
          HttpHeaders headers = new HttpHeaders();
          headers.setContentType(MediaType.APPLICATION_JSON);
 
-         HttpEntity<String> httpEntity = new HttpEntity<String>(message ,headers);
-         
-         ResponseEntity<String> result = this.getRestTemplate().postForEntity(this.getDestination(), httpEntity, String.class);
-         
+         HttpEntity<String> httpEntity = new HttpEntity<String>(message, headers);
+
+         ResponseEntity<String> result = this.getRestTemplate().postForEntity(this.getDestination(), httpEntity,
+               String.class);
+
          logger.info("Response received. Status: {}, Body: {}", result.getStatusCode(), result.getBody());
       } catch (ResourceAccessException e) {
          logger.error("Failed to send message to destination", e);
