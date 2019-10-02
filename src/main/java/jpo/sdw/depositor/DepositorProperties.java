@@ -19,6 +19,7 @@ public class DepositorProperties implements EnvironmentAware {
    private static final String DEFAULT_GROUP_ID = "usdot.jpo.sdw";
    private static final String DEFAULT_KAFKA_PORT = "9092";
    private static final String DEFAULT_DESTINATION_URL = "https://sdx-service.trihydro.com/api/deposit";
+   private static final String[] DEFAULT_SUBSCRIPTION_TOPICS = { "topic.SDWDepositorInput" };
    private static final String DEFAULT_ENCODE_TYPE = "hex";
 
    @Autowired
@@ -28,10 +29,14 @@ public class DepositorProperties implements EnvironmentAware {
    private String encodeType;
 
    private String kafkaBrokers;
-   private String[] subscriptionTopics = {"topic.SDWDepositorInput"};
+   private String[] subscriptionTopics;
 
    private String apiKey;
    private String destinationUrl;
+
+   private String emailList;
+
+   private String emailFrom;
 
    @PostConstruct
    void initialize() {
@@ -50,7 +55,7 @@ public class DepositorProperties implements EnvironmentAware {
          }
          setKafkaBrokers(dockerIp + ":" + DEFAULT_KAFKA_PORT);
       }
-      
+
       if (getEncodeType() == null)
          setEncodeType(DEFAULT_ENCODE_TYPE);
 
@@ -58,14 +63,41 @@ public class DepositorProperties implements EnvironmentAware {
          setDestinationUrl(DEFAULT_DESTINATION_URL);
 
       if (getSubscriptionTopics() == null || getSubscriptionTopics().length == 0) {
-         logger.error("No Kafka subscription topics specified in configuration");
-         throw new IllegalArgumentException("No Kafka subscription topics specified in configuration");
+         String topics = String.join(",", DEFAULT_SUBSCRIPTION_TOPICS);
+         logger.info("No Kafka subscription topics specified in configuration, defaulting to {}", topics);
+         subscriptionTopics = DEFAULT_SUBSCRIPTION_TOPICS;
       }
-      
-      if(getApiKey() == null){
-            logger.error("No API Key specified in configuration");
+
+      if (getApiKey() == null) {
+         logger.error("No API Key specified in configuration");
          throw new IllegalArgumentException("No API Key specified in configuration");
       }
+
+      if (getEmailList() == null) {
+         logger.error("No error email list specified in configuration");
+         throw new IllegalArgumentException("No error email list specified in configuration");
+      }
+
+      if (getEmailFrom() == null) {
+         logger.error("No from email specified in configuration");
+         throw new IllegalArgumentException("No from email specified in configuration");
+      }
+   }
+
+   public String getEmailFrom() {
+      return emailFrom;
+   }
+
+   public void setEmailFrom(String emailFrom) {
+      this.emailFrom = emailFrom;
+   }
+
+   public String getEmailList() {
+      return emailList;
+   }
+
+   public void setEmailList(String emailList) {
+      this.emailList = emailList;
    }
 
    @Override
@@ -109,11 +141,11 @@ public class DepositorProperties implements EnvironmentAware {
       this.groupId = groupId;
    }
 
-   public void setApiKey(String apiKey){
+   public void setApiKey(String apiKey) {
       this.apiKey = apiKey;
    }
-   
-   public String getApiKey(){
+
+   public String getApiKey() {
       return apiKey;
    }
 

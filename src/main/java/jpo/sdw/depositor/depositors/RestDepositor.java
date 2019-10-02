@@ -2,24 +2,24 @@ package jpo.sdw.depositor.depositors;
 
 import java.net.URI;
 
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 public abstract class RestDepositor<T extends Object> implements Depositor<T> {
 
-   private RestTemplate restTemplate;
+   private WebClient webClient;
    private URI destination;
 
-   public RestDepositor(RestTemplate restTemplate, URI destination) {
-      this.setRestTemplate(restTemplate);
+   public RestDepositor(WebClient webClient, URI destination) {
+      this.setWebClient(webClient);
       this.setDestination(destination);
    }
 
-   public RestTemplate getRestTemplate() {
-      return restTemplate;
+   public WebClient getWebClient() {
+      return webClient;
    }
 
-   public void setRestTemplate(RestTemplate restTemplate) {
-      this.restTemplate = restTemplate;
+   public void setWebClient(WebClient webClient) {
+      this.webClient = webClient;
    }
 
    public URI getDestination() {

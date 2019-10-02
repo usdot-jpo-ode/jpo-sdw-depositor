@@ -1,15 +1,27 @@
 package jpo.sdw.depositor.depositors;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.net.URI;
+import java.util.UUID;
 
 import org.junit.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import jpo.sdw.depositor.DepositorProperties;
+import mockit.Capturing;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Tested;
+import mockit.Verifications;
+import reactor.core.publisher.Mono;
 
 public class SDWDepositorTest {
 
@@ -17,27 +29,64 @@ public class SDWDepositorTest {
    SDWDepositor testSDWDepositor;
 
    @Injectable
-   RestTemplate injectableRestTemplate;
+   WebClient injectableWebClient;
+
+   @Injectable
+   DepositorProperties depositorProperties;
+
+   @Injectable
+   JavaMailSender javaMailSender;
 
    @Injectable
    URI injectableURI;
 
    @Test
-   public void testSuccess() {
-      testSDWDepositor.deposit("testRequestBody");
-   }
+   public void testSuccess(@Mocked final LoggerFactory loggerFactory, @Mocked final Logger logger) {
+      String uuid = UUID.randomUUID().toString();
+      ClientResponse clientResponse = ClientResponse.create(HttpStatus.OK).body(uuid).build();
 
-   @Test
-   public void testFailure() {
+      System.out.println("Response received. Status: " + clientResponse.statusCode().name());
 
       new Expectations() {
          {
-            injectableRestTemplate.postForEntity(injectableURI, (HttpEntity<?>) any, String.class);
-            result = new ResourceAccessException("testException123");
+            injectableWebClient.post().exchange();
+            result = Mono.just(clientResponse);
          }
       };
 
       testSDWDepositor.deposit("testRequestBody");
+
+      new Verifications() {
+         {
+            logger.info("Response received. Status: {}, Body: {}", HttpStatus.OK, uuid);
+            javaMailSender.send(any(SimpleMailMessage.class));
+            times = 0;
+         }
+      };
    }
 
+   @Test
+   public void testFailure(@Mocked final LoggerFactory loggerFactory, @Mocked final Logger logger) {
+      String uuid = UUID.randomUUID().toString();
+      ClientResponse clientResponse = ClientResponse.create(HttpStatus.I_AM_A_TEAPOT).body(uuid).build();
+
+      System.out.println("Response received. Status: " + clientResponse.statusCode().name());
+
+      new Expectations() {
+         {
+            injectableWebClient.post().exchange();
+            result = Mono.just(clientResponse);
+         }
+      };
+
+      testSDWDepositor.deposit("testRequestBody");
+
+      new Verifications() {
+         {
+            logger.error("Response received. Status: {}, Body: {}", HttpStatus.I_AM_A_TEAPOT, uuid);
+            javaMailSender.send((SimpleMailMessage)any);
+            times = 1;
+         }
+      };
+   }
 }

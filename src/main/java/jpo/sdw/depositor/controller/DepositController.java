@@ -2,22 +2,20 @@ package jpo.sdw.depositor.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import jpo.sdw.depositor.DepositorProperties;
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor;
 import jpo.sdw.depositor.depositors.SDWDepositor;
-import jpo.sdw.depositor.helpers.HeaderRequestInterceptor;
 
 @Component
 public class DepositController {
@@ -30,15 +28,11 @@ public class DepositController {
 
       @Autowired
       public DepositController(DepositorProperties depositorProperties) throws URISyntaxException {
+            WebClient client = WebClient.builder().baseUrl(depositorProperties.getDestinationUrl())
+                        .defaultHeader("apikey", depositorProperties.getApiKey())
+                        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
 
-            List<ClientHttpRequestInterceptor> authHeaders = new ArrayList<ClientHttpRequestInterceptor>();
-            authHeaders.add(new HeaderRequestInterceptor("apikey", depositorProperties.getApiKey()));
-
-            RestTemplate basicAuthRestTemplate = new RestTemplate();
-            basicAuthRestTemplate.setInterceptors(authHeaders);
-
-            SDWDepositor sdwDepositor = new SDWDepositor(basicAuthRestTemplate,
-                        new URI(depositorProperties.getDestinationUrl()));
+            SDWDepositor sdwDepositor = new SDWDepositor(client, new URI(depositorProperties.getDestinationUrl()));
 
             this.kafkaConsumerRestDepositor = new KafkaConsumerRestDepositor(
                         KafkaConsumerFactory.createConsumer(depositorProperties), sdwDepositor,
