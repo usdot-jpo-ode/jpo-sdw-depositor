@@ -4,34 +4,53 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import jpo.sdw.depositor.DepositorProperties;
+import reactor.core.publisher.Mono;
 
 public class SDWDepositor extends RestDepositor<String> {
 
+   @Autowired
+   private DepositorProperties depositorProperties;
+
+   @Autowired
+   private JavaMailSender javaMailSender;
+
    private static final Logger logger = LoggerFactory.getLogger(SDWDepositor.class);
 
-   public SDWDepositor(RestTemplate restTemplate, URI destination) {
-      super(restTemplate, destination);
+   public SDWDepositor(WebClient webClient, URI destination) {
+      super(webClient, destination);
    }
 
    @Override
    public void deposit(String message) {
-      try {
-         HttpHeaders headers = new HttpHeaders();
-         headers.setContentType(MediaType.APPLICATION_JSON);
+      Mono<ClientResponse> clientResponse = this.getWebClient().post().body(BodyInserters.fromObject(message))
+            .exchange();
 
-         HttpEntity<String> httpEntity = new HttpEntity<String>(message ,headers);
-         
-         ResponseEntity<String> result = this.getRestTemplate().postForEntity(this.getDestination(), httpEntity, String.class);
-         
-         logger.info("Response received. Status: {}, Body: {}", result.getStatusCode(), result.getBody());
-      } catch (ResourceAccessException e) {
-         logger.error("Failed to send message to destination", e);
-      }
+      clientResponse.subscribe(response -> {
+         HttpStatus statusCode = response.statusCode();
+
+         response.bodyToMono(String.class).subscribe(body -> {
+            if (statusCode != HttpStatus.OK) {
+               // There was an error with depositing data, email the team
+               logger.error("Response received. Status: {}, Body: {}", statusCode, body);
+               SimpleMailMessage msg = new SimpleMailMessage();
+               msg.setTo(depositorProperties.getEmailList());
+               msg.setFrom(depositorProperties.getEmailFrom());
+               msg.setSubject("ODE Failed to Deposit to SDX");
+               msg.setText(String.format("Status: {}, Body: {}", statusCode, body));
+               javaMailSender.send(msg);
+            } else {
+               logger.info("Response received. Status: {}, Body: {}", statusCode, body);
+            }
+         });
+      });
    }
 }
