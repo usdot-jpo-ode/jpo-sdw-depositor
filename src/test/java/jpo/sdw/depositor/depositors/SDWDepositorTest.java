@@ -41,11 +41,9 @@ public class SDWDepositorTest {
    URI injectableURI;
 
    @Test
-   public void testSuccess(@Mocked final LoggerFactory loggerFactory, @Mocked final Logger logger) {
+   public void testSuccess(@Mocked final LoggerFactory loggerFactory, @Capturing final Logger logger) {
       String uuid = UUID.randomUUID().toString();
       ClientResponse clientResponse = ClientResponse.create(HttpStatus.OK).body(uuid).build();
-
-      System.out.println("Response received. Status: " + clientResponse.statusCode().name());
 
       new Expectations() {
          {
@@ -66,11 +64,9 @@ public class SDWDepositorTest {
    }
 
    @Test
-   public void testFailure(@Mocked final LoggerFactory loggerFactory, @Mocked final Logger logger) {
+   public void testFailure(@Mocked final LoggerFactory loggerFactory, @Capturing final Logger logger) {
       String uuid = UUID.randomUUID().toString();
       ClientResponse clientResponse = ClientResponse.create(HttpStatus.I_AM_A_TEAPOT).body(uuid).build();
-
-      System.out.println("Response received. Status: " + clientResponse.statusCode().name());
 
       new Expectations() {
          {
