@@ -97,8 +97,7 @@ public class DepositorProperties implements EnvironmentAware {
    }
 
    private boolean emailValid() {
-      String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." + "[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-z"
-            + "A-Z]{2,7}$";
+      String emailRegex = "^[\\w+-.%]+@[\\w-]+\\.[A-Za-z]{2,4}$";
 
       Pattern pat = Pattern.compile(emailRegex);
       if (getEmailFrom() == null)
