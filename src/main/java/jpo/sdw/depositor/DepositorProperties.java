@@ -1,5 +1,7 @@
 package jpo.sdw.depositor;
 
+import java.util.regex.Pattern;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -68,20 +70,47 @@ public class DepositorProperties implements EnvironmentAware {
          subscriptionTopics = DEFAULT_SUBSCRIPTION_TOPICS;
       }
 
-      if (getApiKey() == null) {
+      if (getApiKey() == null || getApiKey().isEmpty()) {
          logger.error("No API Key specified in configuration");
          throw new IllegalArgumentException("No API Key specified in configuration");
       }
 
-      if (getEmailList() == null) {
+      if (getEmailList() == null || getEmailList().isEmpty()) {
          logger.error("No error email list specified in configuration");
          throw new IllegalArgumentException("No error email list specified in configuration");
       }
 
-      if (getEmailFrom() == null) {
+      if (getEmailFrom() == null || getEmailFrom().isEmpty()) {
          logger.error("No from email specified in configuration");
          throw new IllegalArgumentException("No from email specified in configuration");
       }
+
+      if (!emailValid()) {
+         logger.error("From email is not a valid email address");
+         throw new IllegalArgumentException("From email is not a valid email address");
+      }
+
+      if(!emailListValid()){
+         logger.error("Email list is not valid email address(es)");
+         throw new IllegalArgumentException("Email list is not valid email address(es)");
+      }
+   }
+
+   private boolean emailValid() {
+      String emailRegex = "^[\\w+-.%]+@[\\w-]+\\.[A-Za-z]{2,4}$";
+
+      Pattern pat = Pattern.compile(emailRegex);
+      if (getEmailFrom() == null)
+         return false;
+      return pat.matcher(getEmailFrom()).matches();
+   }
+
+   private boolean emailListValid(){
+      String emailRegex = "^([\\w+-.%]+@[\\w-]+\\.[A-Za-z]{2,4},?)+$";
+      Pattern pat = Pattern.compile(emailRegex);
+      if (getEmailList() == null)
+         return false;
+      return pat.matcher(getEmailList()).matches();
    }
 
    public String getEmailFrom() {
