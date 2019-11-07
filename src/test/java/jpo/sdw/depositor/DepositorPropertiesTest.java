@@ -22,8 +22,9 @@ public class DepositorPropertiesTest {
       String[] expectedSubscriptionTopics = { "testSubscriptionTopic" };
       String expectedDestinationUrl = "testDestinationUrl";
       String expectedGroupId = "testGroupId";
-      String expectedUsername = "testUsername";
-      String expectedPassword = "testPassword";
+      String expectedApiKey = "apikey1";
+      String expectedFromEmail = "test@test.com";
+      String expectedEmailList = "test@test.com,unit@test.com";
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -32,8 +33,9 @@ public class DepositorPropertiesTest {
       testDepositorProperties.setDestinationUrl(expectedDestinationUrl);
       testDepositorProperties.setGroupId(expectedGroupId);
       testDepositorProperties.setEnvironment(mockEnvironment);
-      testDepositorProperties.setUsername(expectedUsername);
-      testDepositorProperties.setPassword(expectedPassword);
+      testDepositorProperties.setApiKey(expectedApiKey);
+      testDepositorProperties.setEmailList(expectedEmailList);
+      testDepositorProperties.setEmailFrom(expectedFromEmail);
 
       testDepositorProperties.initialize();
 
@@ -43,8 +45,8 @@ public class DepositorPropertiesTest {
       assertEquals("Incorrect destinationUrl", expectedDestinationUrl, testDepositorProperties.getDestinationUrl());
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
-      assertEquals("Incorrect username", expectedUsername, testDepositorProperties.getUsername());
-      assertEquals("Incorrect password", expectedPassword, testDepositorProperties.getPassword());
+      assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
+      assertEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
    }
 
    @Test
@@ -55,8 +57,9 @@ public class DepositorPropertiesTest {
             "testSubscriptionTopic2" };
       String expectedDestinationUrl = "testDestinationUrl";
       String expectedGroupId = "testGroupId";
-      String expectedUsername = "testUsername";
-      String expectedPassword = "testPassword";
+      String expectedApiKey = "apikey1";
+      String expectedFromEmail = "test@test.com";
+      String expectedEmailList = "test@test.com,unit@test.com";
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -65,8 +68,9 @@ public class DepositorPropertiesTest {
       testDepositorProperties.setDestinationUrl(expectedDestinationUrl);
       testDepositorProperties.setGroupId(expectedGroupId);
       testDepositorProperties.setEnvironment(mockEnvironment);
-      testDepositorProperties.setUsername(expectedUsername);
-      testDepositorProperties.setPassword(expectedPassword);
+      testDepositorProperties.setApiKey(expectedApiKey);
+      testDepositorProperties.setEmailList(expectedEmailList);
+      testDepositorProperties.setEmailFrom(expectedFromEmail);
 
       testDepositorProperties.initialize();
 
@@ -80,16 +84,18 @@ public class DepositorPropertiesTest {
       assertEquals("Incorrect destinationUrl", expectedDestinationUrl, testDepositorProperties.getDestinationUrl());
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
-      assertEquals("Incorrect username", expectedUsername, testDepositorProperties.getUsername());
-      assertEquals("Incorrect password", expectedPassword, testDepositorProperties.getPassword());
+      assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());
+      assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
+      assertEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
    }
 
    @Test
    public void testDefaults() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setPassword("pppppppp");
+      testDepositorProperties.setApiKey("apikey1");
+      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailFrom("test@test.com");
       testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
 
       testDepositorProperties.initialize();
@@ -100,61 +106,61 @@ public class DepositorPropertiesTest {
    }
 
    @Test
-   public void missingUsernameThrowsException() {
+   public void nullApiKeyThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setPassword("pppppppp");
-      testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
+      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
          fail("Expected IllegalArgumentException");
       } catch (Exception e) {
          assertTrue(e instanceof IllegalArgumentException);
-         assertEquals("No username specified in configuration", e.getMessage());
+         assertEquals("No API Key specified in configuration", e.getMessage());
       }
    }
 
    @Test
-   public void missingPasswordThrowsException() {
+   public void emptyApiKeyThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
+      testDepositorProperties.setApiKey("");
+      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
          fail("Expected IllegalArgumentException");
       } catch (Exception e) {
          assertTrue(e instanceof IllegalArgumentException);
-         assertEquals("No password specified in configuration", e.getMessage());
+         assertEquals("No API Key specified in configuration", e.getMessage());
       }
    }
 
    @Test
-   public void nullSubscriptionTopicsThrowsException() {
+   public void invalidFromEmailThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setPassword("pppppppp");
-      testDepositorProperties.setSubscriptionTopics(null);
+      testDepositorProperties.setApiKey("apikey1");
+      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailFrom("test@test..com");
       try {
          testDepositorProperties.initialize();
          fail("Expected IllegalArgumentException");
       } catch (Exception e) {
          assertTrue(e instanceof IllegalArgumentException);
-         assertEquals("No Kafka subscription topics specified in configuration", e.getMessage());
+         assertEquals("From email is not a valid email address", e.getMessage());
       }
    }
 
    @Test
-   public void emptySubscriptionTopicsThrowsException() {
+   public void invalidEmailListThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setUsername("uuuuuuuu");
-      testDepositorProperties.setPassword("pppppppp");
-      testDepositorProperties.setSubscriptionTopics(new String[] {});
+      testDepositorProperties.setApiKey("apikey1");
+      testDepositorProperties.setEmailList("test@test..com,unit@test.com");
+      testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
          fail("Expected IllegalArgumentException");
       } catch (Exception e) {
          assertTrue(e instanceof IllegalArgumentException);
-         assertEquals("No Kafka subscription topics specified in configuration", e.getMessage());
+         assertEquals("Email list is not valid email address(es)", e.getMessage());
       }
    }
-
 }
