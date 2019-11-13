@@ -4,7 +4,6 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,16 +16,15 @@ import reactor.core.publisher.Mono;
 
 public class SDWDepositor extends RestDepositor<String> {
 
-   @Autowired
    private DepositorProperties depositorProperties;
-
-   @Autowired
    private JavaMailSender javaMailSender;
 
    private static final Logger logger = LoggerFactory.getLogger(SDWDepositor.class);
 
-   public SDWDepositor(WebClient webClient, URI destination) {
+   public SDWDepositor(DepositorProperties props, JavaMailSender sender, WebClient webClient, URI destination) {
       super(webClient, destination);
+      depositorProperties = props;
+      javaMailSender = sender;
    }
 
    @Override
