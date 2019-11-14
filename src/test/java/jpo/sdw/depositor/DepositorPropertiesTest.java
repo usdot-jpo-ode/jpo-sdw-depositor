@@ -24,7 +24,7 @@ public class DepositorPropertiesTest {
       String expectedGroupId = "testGroupId";
       String expectedApiKey = "apikey1";
       String expectedFromEmail = "test@test.com";
-      String expectedEmailList = "test@test.com,unit@test.com";
+      String[] expectedEmailList = new String[] {"test@test.com", "unit@test.com"};
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -59,7 +59,7 @@ public class DepositorPropertiesTest {
       String expectedGroupId = "testGroupId";
       String expectedApiKey = "apikey1";
       String expectedFromEmail = "test@test.com";
-      String expectedEmailList = "test@test.com,unit@test.com";
+      String[] expectedEmailList = {"test@test.com", "unit@test.com"};
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -94,7 +94,7 @@ public class DepositorPropertiesTest {
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
       testDepositorProperties.setApiKey("apikey1");
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
 
@@ -108,7 +108,7 @@ public class DepositorPropertiesTest {
    @Test
    public void nullApiKeyThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
@@ -123,7 +123,7 @@ public class DepositorPropertiesTest {
    public void emptyApiKeyThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
       testDepositorProperties.setApiKey("");
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
@@ -138,7 +138,7 @@ public class DepositorPropertiesTest {
    public void invalidFromEmailThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
       testDepositorProperties.setApiKey("apikey1");
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test..com");
       try {
          testDepositorProperties.initialize();
@@ -153,7 +153,7 @@ public class DepositorPropertiesTest {
    public void invalidEmailListThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
       testDepositorProperties.setApiKey("apikey1");
-      testDepositorProperties.setEmailList("test@test..com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test...com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
