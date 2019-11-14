@@ -43,7 +43,7 @@ public class SDWDepositor extends RestDepositor<String> {
                msg.setTo(depositorProperties.getEmailList());
                msg.setFrom(depositorProperties.getEmailFrom());
                msg.setSubject("ODE Failed to Deposit to SDX");
-               msg.setText(String.format("Status: %d, Body: %s", statusCode, body));
+               msg.setText(String.format("Status: %d, Body: %s", statusCode.value(), body));
                javaMailSender.send(msg);
             } else {
                logger.info("Response received. Status: {}, Body: {}", statusCode, body);
