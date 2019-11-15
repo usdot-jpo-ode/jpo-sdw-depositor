@@ -1,5 +1,6 @@
 package jpo.sdw.depositor;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +47,7 @@ public class DepositorPropertiesTest {
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
       assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
-      assertEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
+      assertArrayEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
    }
 
    @Test
@@ -86,7 +87,7 @@ public class DepositorPropertiesTest {
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
       assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());
       assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
-      assertEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
+      assertArrayEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
    }
 
    @Test

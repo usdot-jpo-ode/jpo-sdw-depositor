@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
-import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import jpo.sdw.depositor.DepositorProperties;
@@ -30,8 +29,7 @@ public class DepositControllerTest {
 
    @Capturing
    KafkaConsumerRestDepositor capturingKafkaConsumerRestDepositor;
-   @Capturing
-   BasicAuthorizationInterceptor capturingBasicAuthorizationInterceptor;
+   
    @Capturing
    URI capturingURI;
 
