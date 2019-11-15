@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -27,12 +28,14 @@ public class DepositController {
       private DepositorProperties depositorProperties;
 
       @Autowired
-      public DepositController(DepositorProperties depositorProperties) throws URISyntaxException {
+      public DepositController(DepositorProperties depositorProperties, JavaMailSender mailSender)
+                  throws URISyntaxException {
             WebClient client = WebClient.builder().baseUrl(depositorProperties.getDestinationUrl())
                         .defaultHeader("apikey", depositorProperties.getApiKey())
                         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
 
-            SDWDepositor sdwDepositor = new SDWDepositor(client, new URI(depositorProperties.getDestinationUrl()));
+            SDWDepositor sdwDepositor = new SDWDepositor(depositorProperties, mailSender, client,
+                        new URI(depositorProperties.getDestinationUrl()));
 
             this.kafkaConsumerRestDepositor = new KafkaConsumerRestDepositor(
                         KafkaConsumerFactory.createConsumer(depositorProperties), sdwDepositor,
