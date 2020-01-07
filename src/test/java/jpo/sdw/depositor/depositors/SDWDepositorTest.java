@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -81,6 +82,33 @@ public class SDWDepositorTest {
          {
             logger.error("Response received. Status: {}, Body: {}", HttpStatus.I_AM_A_TEAPOT, uuid);
             javaMailSender.send((SimpleMailMessage)any);
+            times = 1;
+         }
+      };
+   }
+
+   @Test
+   public void testEmailSendFailure(@Mocked final LoggerFactory loggerFactory, @Capturing final Logger logger) {
+      ClientResponse clientResponse = ClientResponse.create(HttpStatus.FORBIDDEN).body("").build();
+
+      new Expectations() {
+         {
+            injectableWebClient.post().exchange();
+            result = Mono.just(clientResponse);
+         };
+         {
+            javaMailSender.send((SimpleMailMessage)any);
+            result = new MailSendException("failed to send");
+         }
+      };
+
+      testSDWDepositor.deposit("testRequestBody");
+
+      new Verifications() {
+         {
+            logger.error("Response received. Status: {}, Body: {}", HttpStatus.FORBIDDEN, "");
+            javaMailSender.send((SimpleMailMessage)any);
+            logger.error("Unable to send deposit failure email: {}", "failed to send");
             times = 1;
          }
       };

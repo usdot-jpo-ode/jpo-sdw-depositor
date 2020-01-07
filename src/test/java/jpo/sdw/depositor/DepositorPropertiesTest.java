@@ -1,5 +1,6 @@
 package jpo.sdw.depositor;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +25,7 @@ public class DepositorPropertiesTest {
       String expectedGroupId = "testGroupId";
       String expectedApiKey = "apikey1";
       String expectedFromEmail = "test@test.com";
-      String expectedEmailList = "test@test.com,unit@test.com";
+      String[] expectedEmailList = new String[] {"test@test.com", "unit@test.com"};
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -46,7 +47,7 @@ public class DepositorPropertiesTest {
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
       assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
-      assertEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
+      assertArrayEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
    }
 
    @Test
@@ -59,7 +60,7 @@ public class DepositorPropertiesTest {
       String expectedGroupId = "testGroupId";
       String expectedApiKey = "apikey1";
       String expectedFromEmail = "test@test.com";
-      String expectedEmailList = "test@test.com,unit@test.com";
+      String[] expectedEmailList = {"test@test.com", "unit@test.com"};
 
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
@@ -86,7 +87,7 @@ public class DepositorPropertiesTest {
       assertNotNull("No environment", testDepositorProperties.getEnvironment());
       assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());
       assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
-      assertEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
+      assertArrayEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
    }
 
    @Test
@@ -94,7 +95,7 @@ public class DepositorPropertiesTest {
       DepositorProperties testDepositorProperties = new DepositorProperties();
 
       testDepositorProperties.setApiKey("apikey1");
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       testDepositorProperties.setSubscriptionTopics(new String[] { "topic.Topic" });
 
@@ -108,7 +109,7 @@ public class DepositorPropertiesTest {
    @Test
    public void nullApiKeyThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
@@ -123,7 +124,7 @@ public class DepositorPropertiesTest {
    public void emptyApiKeyThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
       testDepositorProperties.setApiKey("");
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();
@@ -138,7 +139,7 @@ public class DepositorPropertiesTest {
    public void invalidFromEmailThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
       testDepositorProperties.setApiKey("apikey1");
-      testDepositorProperties.setEmailList("test@test.com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test.com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test..com");
       try {
          testDepositorProperties.initialize();
@@ -153,7 +154,7 @@ public class DepositorPropertiesTest {
    public void invalidEmailListThrowsException() {
       DepositorProperties testDepositorProperties = new DepositorProperties();
       testDepositorProperties.setApiKey("apikey1");
-      testDepositorProperties.setEmailList("test@test..com,unit@test.com");
+      testDepositorProperties.setEmailList(new String[] {"test@test...com", "unit@test.com"});
       testDepositorProperties.setEmailFrom("test@test.com");
       try {
          testDepositorProperties.initialize();

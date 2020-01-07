@@ -36,7 +36,7 @@ public class DepositorProperties implements EnvironmentAware {
    private String apiKey;
    private String destinationUrl;
 
-   private String emailList;
+   private String[] emailList;
 
    private String emailFrom;
 
@@ -75,7 +75,7 @@ public class DepositorProperties implements EnvironmentAware {
          throw new IllegalArgumentException("No API Key specified in configuration");
       }
 
-      if (getEmailList() == null || getEmailList().isEmpty()) {
+      if (getEmailList() == null || getEmailList().length == 0) {
          logger.error("No error email list specified in configuration");
          throw new IllegalArgumentException("No error email list specified in configuration");
       }
@@ -90,7 +90,7 @@ public class DepositorProperties implements EnvironmentAware {
          throw new IllegalArgumentException("From email is not a valid email address");
       }
 
-      if(!emailListValid()){
+      if (!emailListValid()) {
          logger.error("Email list is not valid email address(es)");
          throw new IllegalArgumentException("Email list is not valid email address(es)");
       }
@@ -105,12 +105,12 @@ public class DepositorProperties implements EnvironmentAware {
       return pat.matcher(getEmailFrom()).matches();
    }
 
-   private boolean emailListValid(){
+   private boolean emailListValid() {
       String emailRegex = "^([\\w+-.%]+@[\\w-]+\\.[A-Za-z]{2,4},?)+$";
       Pattern pat = Pattern.compile(emailRegex);
       if (getEmailList() == null)
          return false;
-      return pat.matcher(getEmailList()).matches();
+      return pat.matcher(String.join(",", getEmailList())).matches();
    }
 
    public String getEmailFrom() {
@@ -121,11 +121,11 @@ public class DepositorProperties implements EnvironmentAware {
       this.emailFrom = emailFrom;
    }
 
-   public String getEmailList() {
+   public String[] getEmailList() {
       return emailList;
    }
 
-   public void setEmailList(String emailList) {
+   public void setEmailList(String[] emailList) {
       this.emailList = emailList;
    }
 
