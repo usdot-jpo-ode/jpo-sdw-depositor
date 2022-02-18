@@ -1,0 +1,14 @@
+version: '2'
+services:
+  sdwd:
+    build:
+      context: .
+      dockerfile: Dockerfile.cdot
+    environment:
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      KAFKA_TYPE: ${KAFKA_TYPE}
+      CONFLUENT_KEY: ${CONFLUENT_KEY}
+      CONFLUENT_SECRET: ${CONFLUENT_SECRET}
+
+    depends_on:
+      - kafka

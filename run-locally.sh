@@ -1,0 +1,1 @@
+java -jar ./target/jpo-sdw-depositor-0.01-SNAPSHOT.jar
