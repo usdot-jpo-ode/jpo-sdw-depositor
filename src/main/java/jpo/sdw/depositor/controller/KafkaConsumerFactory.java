@@ -19,7 +19,7 @@ public class KafkaConsumerFactory {
       props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
       props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
-      String kafkaType = System.getenv("KAFKA_TYPE");
+      String kafkaType = getEnvironmentVariable("KAFKA_TYPE");
       if (kafkaType != null && kafkaType.equals("CONFLUENT")) {
          addConfluentProperties(props);
       }
@@ -36,8 +36,8 @@ public class KafkaConsumerFactory {
       props.put("security.protocol", "SASL_SSL");
       props.put("sasl.mechanism", "PLAIN");
 
-      String username = System.getenv("CONFLUENT_KEY");
-      String password = System.getenv("CONFLUENT_SECRET");
+      String username = getEnvironmentVariable("CONFLUENT_KEY");
+      String password = getEnvironmentVariable("CONFLUENT_SECRET");
 
       if (username != null && password != null) {
          String auth = "org.apache.kafka.common.security.plain.PlainLoginModule required " +
@@ -45,10 +45,13 @@ public class KafkaConsumerFactory {
                  "password=\"" + password + "\";";
          props.put("sasl.jaas.config", auth);
       }
-      else {
-         // logger.error("Environment variables CONFLUENT_KEY and CONFLUENT_SECRET are not set. Set these in the .env file to use Confluent Cloud");
-         // TODO: log error
-      }
+   }
 
+   private static String getEnvironmentVariable(String variableName) {
+      String value = System.getenv(variableName);
+      if (value == null || value.equals("")) {
+         System.out.println("Something went wrong retrieving the environment variable " + variableName);
+      }
+      return value;
    }
 }
