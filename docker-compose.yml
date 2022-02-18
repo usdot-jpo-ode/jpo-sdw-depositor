@@ -1,20 +1,20 @@
 version: '2'
 services:
-  sdwd:
+  sdw_depositor:
     build:
       context: .
       dockerfile: Dockerfile.cdot
     environment:
       DOCKER_HOST_IP: ${DOCKER_HOST_IP}
-      SDW_API_KEY: ${SDW_API_KEY}
-      SDW_SUBSCRIPTION_TOPIC: ${SDW_SUBSCRIPTION_TOPIC}
-      # SDW_DESTINATION_URL: ${SDW_DESTINATION_URL}
       SDW_EMAIL_LIST: ${SDW_EMAIL_LIST}
       SDW_EMAIL_FROM: ${SDW_EMAIL_FROM}
-      # SDW_KAFKA_PORT: $SDW_KAFKA_PORT}
-      KAFKA_TYPE: ${KAFKA_TYPE}
-      CONFLUENT_KEY: ${CONFLUENT_KEY}
-      CONFLUENT_SECRET: ${CONFLUENT_SECRET}
-      SDW_GROUP_ID: ${SDW_GROUP_ID}
+      SDW_API_KEY: ${SDW_API_KEY}
+      SDW_DESTINATION_URL: ${SDW_DESTINATION_URL}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
     depends_on:
-      - kafka
+      - ode
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
