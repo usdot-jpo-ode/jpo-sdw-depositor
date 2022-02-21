@@ -45,6 +45,8 @@ public class KafkaConsumerFactory {
                  "password=\"" + password + "\";";
          props.put("sasl.jaas.config", auth);
       }
+
+      props.put("debug", "all");
    }
 
    private static String getEnvironmentVariable(String variableName) {
