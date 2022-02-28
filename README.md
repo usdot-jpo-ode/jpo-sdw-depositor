@@ -55,7 +55,7 @@ You may configure these values in `jpo-sdw-depositor/src/main/resources/applicat
 | sdw.emailFrom             | SDW_EMAIL_FROM    | Support email to send from                                                            | error@email.com
 
 # Confluent Cloud Integration
-Rather than using a local kafka instance, the ACM can utilize an instance of kafka hosted by Confluent Cloud via SASL.
+Rather than using a local kafka instance, this project can utilize an instance of kafka hosted by Confluent Cloud via SASL.
 
 ## Environment variables
 ### Purpose & Usage
