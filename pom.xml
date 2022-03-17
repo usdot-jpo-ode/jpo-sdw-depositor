@@ -13,6 +13,11 @@
    <version>0.0.1-SNAPSHOT</version>
    <packaging>jar</packaging>
    <name>JPO SDW Depositor</name>
+
+   <properties>
+      <jmockit.version>1.49</jmockit.version>
+   </properties>
+
    <dependencies>
       <dependency>
          <groupId>org.springframework.boot</groupId>
@@ -35,7 +40,7 @@
       <dependency>
          <groupId>org.jmockit</groupId>
          <artifactId>jmockit</artifactId>
-         <version>1.49</version>
+         <version>${jmockit.version}</version>
          <scope>test</scope>
       </dependency>
       <dependency>
