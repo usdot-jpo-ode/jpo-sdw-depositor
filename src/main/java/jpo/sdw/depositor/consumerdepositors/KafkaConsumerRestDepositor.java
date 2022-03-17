@@ -1,5 +1,6 @@
 package jpo.sdw.depositor.consumerdepositors;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -41,7 +42,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
    public void run(String... topics) {
       this.getKafkaConsumer().subscribe(Arrays.asList(topics));
       while (LoopController.loop()) { // NOSONAR (used for unit testing)
-         ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(100);
+         ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(Duration.ofMillis(100));
          for (ConsumerRecord<String, String> record : records) {
             logger.info("Depositing message {}", record);
             this.jsonMsg.put("EncodedMsg", record.value());
