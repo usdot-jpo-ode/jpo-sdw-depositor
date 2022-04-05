@@ -3,10 +3,10 @@ package jpo.sdw.depositor.consumerdepositors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +20,11 @@ import org.junit.Test;
 
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor.LoopController;
 import jpo.sdw.depositor.depositors.RestDepositor;
-import mockit.Capturing;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mocked;
+import mockit.Invocation;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Tested;
 
 public class KafkaConsumerRestDepositorTest {
@@ -38,11 +39,8 @@ public class KafkaConsumerRestDepositorTest {
    @Injectable
    String encodeType;
 
-   @Mocked
-   ConsumerRecord<String, String> mockConsumerRecord;
-
-   @Test(timeout = 4000) // 4 second timeout for safety; this test overrides an infinite loop
-   public void runShouldDepositMessage(@Capturing LoopController capturingLoopController) {
+   @Test
+   public void runShouldDepositMessage() {
 
       List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
       crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", null));
@@ -52,12 +50,20 @@ public class KafkaConsumerRestDepositorTest {
 
       final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<String, String>(recordsMap);
 
+      new MockUp<LoopController>() {
+         @Mock
+         public boolean loop(Invocation inv) {
+            if (inv.getInvocationIndex() == 0) {
+               return true;
+            } else {
+               return false;
+            }
+         }
+      };
+
       new Expectations() {
          {
-            LoopController.loop();
-            returns(true, false);
-
-            injectableKafkaConsumer.poll(anyLong);
+            injectableKafkaConsumer.poll((Duration)any);
             result = testConsumerRecords;
 
             injectableRestDepositor.deposit(anyString);

@@ -1,0 +1,21 @@
+version: '2'
+services:
+  sdw_depositor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+      SDW_EMAIL_LIST: ${SDW_EMAIL_LIST}
+      SDW_EMAIL_FROM: ${SDW_EMAIL_FROM}
+      SDW_API_KEY: ${SDW_API_KEY}
+      SDW_DESTINATION_URL: ${SDW_DESTINATION_URL}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
+      KAFKA_TYPE: ${KAFKA_TYPE}
+      CONFLUENT_KEY: ${CONFLUENT_KEY}
+      CONFLUENT_SECRET: ${CONFLUENT_SECRET}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
