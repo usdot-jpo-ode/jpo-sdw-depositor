@@ -5,6 +5,7 @@ import java.util.Properties;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import jpo.sdw.depositor.DepositorProperties;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 
 public class KafkaConsumerFactory {
 
@@ -18,6 +19,8 @@ public class KafkaConsumerFactory {
 
       props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
       props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+      props.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, 100000);
+      props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, 100);
 
       String kafkaType = getEnvironmentVariable("KAFKA_TYPE");
       if (kafkaType != null && kafkaType.equals("CONFLUENT")) {
