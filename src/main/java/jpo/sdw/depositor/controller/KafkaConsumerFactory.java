@@ -19,6 +19,10 @@ public class KafkaConsumerFactory {
 
       props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
       props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+      
+      // FETCH_MIN_BYTES_CONFIG: minimum amount of data the consumer needs to have before it returns
+      // FETCH_MAX_WAIT_MS_CONFIG: maximum amount of time the consumer waits for data before it returns
+      // The kafka consumer returns data whenever one of the conditions is met
       props.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, 100000);
       props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, 100);
 

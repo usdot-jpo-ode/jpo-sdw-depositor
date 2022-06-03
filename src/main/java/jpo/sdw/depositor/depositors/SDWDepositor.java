@@ -29,7 +29,7 @@ public class SDWDepositor extends RestDepositor<String> {
 
    @Override
    public void deposit(String message) {
-      Mono<ClientResponse> clientResponse = this.getWebClient().post().header("apiKey", depositorProperties.getApiKey()).body(BodyInserters.fromValue(message))
+      Mono<ClientResponse> clientResponse = this.getWebClient().post().body(BodyInserters.fromValue(message))
             .exchange();
 
       clientResponse.subscribe(response -> {
