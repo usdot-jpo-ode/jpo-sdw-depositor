@@ -5,6 +5,7 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -29,8 +30,11 @@ public class SDWDepositor extends RestDepositor<String> {
 
    @Override
    public void deposit(String message) {
-      Mono<ClientResponse> clientResponse = this.getWebClient().post().body(BodyInserters.fromValue(message))
-            .exchange();
+      Mono<ClientResponse> clientResponse = this.getWebClient()
+         .post()
+         .body(BodyInserters.fromValue(message))
+         .retrieve()
+         .bodyToMono(ClientResponse.class);
 
       clientResponse.subscribe(response -> {
          HttpStatus statusCode = response.statusCode();

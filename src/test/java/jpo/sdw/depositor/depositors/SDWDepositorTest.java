@@ -48,7 +48,7 @@ public class SDWDepositorTest {
 
       new Expectations() {
          {
-            injectableWebClient.post().exchange();
+            injectableWebClient.post().retrieve().bodyToMono(ClientResponse.class);
             result = Mono.just(clientResponse);
          }
       };
@@ -71,7 +71,7 @@ public class SDWDepositorTest {
 
       new Expectations() {
          {
-            injectableWebClient.post().exchange();
+            injectableWebClient.post().retrieve().bodyToMono(ClientResponse.class);
             result = Mono.just(clientResponse);
          }
       };
@@ -93,7 +93,7 @@ public class SDWDepositorTest {
 
       new Expectations() {
          {
-            injectableWebClient.post().exchange();
+            injectableWebClient.post().retrieve().bodyToMono(ClientResponse.class);
             result = Mono.just(clientResponse);
          };
          {
