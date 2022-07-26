@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import jpo.sdw.depositor.DepositorProperties;
@@ -30,35 +29,34 @@ public class SDWDepositor extends RestDepositor<String> {
 
    @Override
    public void deposit(String message) {
-      Mono<ClientResponse> clientResponse = this.getWebClient()
+
+      Mono<ResponseEntity<String>> clientResponse = this.getWebClient()
          .post()
          .body(BodyInserters.fromValue(message))
          .retrieve()
-         .bodyToMono(ClientResponse.class);
+         .toEntity(String.class);
 
-      clientResponse.subscribe(response -> {
-         HttpStatus statusCode = response.statusCode();
+      clientResponse.subscribe( response -> {
+         HttpStatus statusCode = response.getStatusCode();
+         var body = response.getBody();
+         if (statusCode != HttpStatus.OK) {
+            // There was an error with depositing data, email the team
+            logger.error("Response received. Status: {}, Body: {}", statusCode, body);
+            SimpleMailMessage msg = new SimpleMailMessage();
+            msg.setTo(depositorProperties.getEmailList());
+            msg.setFrom(depositorProperties.getEmailFrom());
+            msg.setSubject("ODE Failed to Deposit to SDX");
+            msg.setText(String.format("Status: %d, Body: %s", statusCode.value(), body));
 
-         response.bodyToMono(String.class).subscribe(body -> {
-            if (statusCode != HttpStatus.OK) {
-               // There was an error with depositing data, email the team
-               logger.error("Response received. Status: {}, Body: {}", statusCode, body);
-               SimpleMailMessage msg = new SimpleMailMessage();
-               msg.setTo(depositorProperties.getEmailList());
-               msg.setFrom(depositorProperties.getEmailFrom());
-               msg.setSubject("ODE Failed to Deposit to SDX");
-               msg.setText(String.format("Status: %d, Body: %s", statusCode.value(), body));
-
-               try {
-                  javaMailSender.send(msg);
-               } catch (Exception e) {
-                  logger.error("Unable to send deposit failure email: {}", e.getMessage());
-                  e.printStackTrace();
-               }
-            } else {
-               logger.info("Response received. Status: {}, Body: {}", statusCode, body);
+            try {
+               javaMailSender.send(msg);
+            } catch (Exception e) {
+               logger.error("Unable to send deposit failure email: {}", e.getMessage());
+               e.printStackTrace();
             }
-         });
+         } else {
+            logger.info("Response received. Status: {}, Body: {}", statusCode, body);
+         }
       });
    }
 }
