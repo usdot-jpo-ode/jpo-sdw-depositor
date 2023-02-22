@@ -38,7 +38,7 @@ public class SDWDepositor extends RestDepositor<String> {
 
       clientResponse.subscribe( response -> {
          HttpStatus statusCode = response.getStatusCode();
-         var body = response.getBody();
+         String body = response.getBody();
          if (statusCode != HttpStatus.OK) {
             // There was an error with depositing data, email the team
             logger.error("Response received. Status: {}, Body: {}", statusCode, body);
