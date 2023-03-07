@@ -1,8 +1,12 @@
 package jpo.sdw.depositor.depositors;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.net.URI;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +42,13 @@ public class SDWDepositorTest {
    Logger mockedLogger;
 
    @Tested
-   SDWDepositor testSDWDepositor = new SDWDepositor(injectableDepositorProperties, injectableJavaMailSender, injectableWebClient, injectableURI);
+   SDWDepositor testSDWDepositor;
+
+   @Before
+   public void before() {
+      injectableJavaMailSender = mock(JavaMailSender.class);
+      testSDWDepositor = new SDWDepositor(injectableDepositorProperties, injectableJavaMailSender, injectableWebClient, injectableURI);
+   }
 
    @Test
    public void testSuccess() {
@@ -90,10 +100,10 @@ public class SDWDepositorTest {
             mockedLogger.error("Response received. Status: {}, Body: {}", statusCode, uuid);
             times = 1;
          }
-         // {
-         //    injectableJavaMailSender.send((SimpleMailMessage)any); // TODO: fix missing invocation error occurring here
-         //    times = 1;
-         // }
+         {
+            injectableJavaMailSender.send((SimpleMailMessage)any);
+            times = 1;
+         }
          {
             mockedLogger.error("Unable to send deposit failure email: {}", "failed to send");
             times = 0;
@@ -120,10 +130,10 @@ public class SDWDepositorTest {
             mockedLogger.error("Response received. Status: {}, Body: {}", HttpStatus.FORBIDDEN, "");
             times = 1;
          }
-         // {
-         //    injectableJavaMailSender.send((SimpleMailMessage)any); // TODO: fix missing invocation error occurring here
-         //    times = 1;
-         // }
+         {
+            injectableJavaMailSender.send((SimpleMailMessage)any);
+            times = 1;
+         }
          {
             mockedLogger.error("Unable to send deposit failure email: {}", "failed to send");
             times = 1;
