@@ -74,3 +74,11 @@ There is a provided docker-compose file (docker-compose-confluent-cloud.yml) tha
 
 ## Note
 This has only been tested with Confluent Cloud but technically all SASL authenticated Kafka brokers can be reached using this method.
+
+# Unit Testing
+The unit tests can be run by executing the following command from the root directory of the project:
+```
+mvn test
+```
+
+It should be noted that Maven & Java are required to run the unit tests. If you do not have Maven or Java installed, you can reopen the project in the provided dev container and run the tests from there.
