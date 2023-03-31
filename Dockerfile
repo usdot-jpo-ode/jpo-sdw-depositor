@@ -11,11 +11,11 @@ COPY ./src ./src
 RUN mvn clean package -DskipTests
 
 # Run container
-FROM openjdk:8u171-jre-alpine
+FROM eclipse-temurin:11-jre-alpine
 
 WORKDIR /home
-COPY --from=builder /home/target/jpo-sdw-depositor-0.0.1-SNAPSHOT.jar /home
+COPY --from=builder /home/target/jpo-sdw-depositor-1.3.0.jar /home
 
 ENTRYPOINT ["java", \
 	"-jar", \
-	"/home/jpo-sdw-depositor-0.0.1-SNAPSHOT.jar"]
+	"/home/jpo-sdw-depositor-1.3.0.jar"]
