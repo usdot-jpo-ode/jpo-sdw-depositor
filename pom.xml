@@ -22,7 +22,12 @@
     <!-- JaCoCo Properties -->
     <jacoco.version>0.8.8</jacoco.version>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-      <sonar.language>java</sonar.language>
+    <sonar.language>java</sonar.language>
+    <env>test</env>
+    <gebEnv>test</gebEnv>
+    <jacoco.skip>false</jacoco.skip>
+    <maven.test.skip>false</maven.test.skip>
+    <skip.unit.tests>false</skip.unit.tests>
    </properties>
 
    <dependencies>
@@ -133,14 +138,4 @@
         </plugin>
       </plugins>
    </build>
-      <profile>
-        <id>test</id>
-        <properties>
-            <env>test</env>
-            <gebEnv>test</gebEnv>
-            <jacoco.skip>false</jacoco.skip>
-            <maven.test.skip>false</maven.test.skip>
-            <skip.unit.tests>false</skip.unit.tests>
-        </properties>
-    </profile>
 </project>
