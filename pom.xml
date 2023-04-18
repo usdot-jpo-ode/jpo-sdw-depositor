@@ -17,7 +17,7 @@
 
    <properties>
       <jmockit.version>1.49</jmockit.version>
-      <sonar.organization>usdot-jpo-ode-1</sonar.organization>
+   <sonar.organization>usdot-jpo-ode-1</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <!-- JaCoCo Properties -->
     <jacoco.version>0.8.8</jacoco.version>
@@ -88,30 +88,25 @@
    
    <build>
       <plugins>
-         <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${jacoco.version}</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>report</id>
-                    <phase>prepare-package</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${jacoco.version}</version>
-        </plugin>
+           <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-code-coverage-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>      
          <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
@@ -139,3 +134,4 @@
       </plugins>
    </build>
 </project>
+ 
