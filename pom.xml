@@ -49,9 +49,7 @@
          <artifactId>reactor-spring</artifactId>
          <version>1.0.1.RELEASE</version>
       </dependency>
-   </dependencies>
-  
-   <dependencies>
+ 
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -173,7 +171,7 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-
+</dependencies>
    <build>
          <finalName>${project.artifactId}</finalName>
         <plugins>
