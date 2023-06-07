@@ -6,7 +6,7 @@ on:
       - "develop"
 
 jobs:
-  dockerhub-Jpo-ode:
+  dockerhub-jpo-sdw-depositor:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -1,6 +1,6 @@
-name: ci
-
-on: [pull_request, push]
+name: CI
+on: 
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -10,22 +10,63 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build
         uses: docker/build-push-action@v3
-
+  jpo-sdw-depositor:
+   runs-on: ubuntu-latest
+   container:
+     image: openjdk:17-jdk-slim-buster
+     options: --user root
+   steps:
+     - name: Checkout ${{ github.event.repository.name }}
+       uses: actions/checkout@v3    
+     - name: Set up Maven
+       uses: stCarolas/setup-maven@v4.5
+       with:
+        maven-version: 3.8.2          
+     - name: Build
+       run: |
+         cd $GITHUB_WORKSPACE
+         ls -ls && pwd
+         mvn install -DskipTests
+         mvn test
+         mvn -e -X clean org.jacoco:jacoco-maven-plugin:prepare-agent package
+         mvn -e -X clean org.jacoco:jacoco-maven-plugin:report package 
+     - name: Archive code coverage results
+       uses: actions/upload-artifact@v3
+       with:
+         name: jpo-sdw-depositor
+         path: /__w/jpo-sdw-depositor/jpo-sdw-depositor/target  
   sonar:
+    needs: [jpo-sdw-depositor]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v3
         with:
-          submodules: recursive
-      - name: Set up JDK
-        uses: actions/setup-java@v3
+          fetch-depth: 0   
+      - run: chmod +x -R /home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor
+
+      - name: Download code coverage results
+        uses: actions/download-artifact@v3
         with:
-          java-version: "11"
-          distribution: "temurin"
-      - name: Run Sonar
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          name: jpo-sdw-depositor
+          path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
+      - name: Setup SonarScanner
+        uses: warchant/setup-sonar-scanner@v4
+        with:
+          version: 4.8.0.2856
+      - name: Generate sonar properties file
         run: |
-          mvn install -DskipTests
-          mvn test
-          mvn -e -X clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor -Dsonar.projectName=jpo-sdw-depositor -Dsonar.branch.name=$GITHUB_REF_NAME
+          cat <<EOF > /tmp/sonar-scanner.properties
+          sonar.host.url=https://sonarcloud.io
+          sonar.coverage.jacoco.xmlReportPaths=/__w/jpo-sdw-depositor/jpo-sdw-depositor/target/site/jacoco/jacoco.xml
+          sonar.java.binaries=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
+          sonar.projectName=jpo-sdw-depositor
+          sonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor
+          sonar.organization=usdot-jpo-ode-1
+          EOF
+      - name: Run SonarScanner
+        uses: usdot-fhwa-stol/actions/sonar-scanner@main
+        with:
+          sonar-properties-path: /tmp/sonar-scanner.properties
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          working-dir: $GITHUB_WORKSPACE                 
