@@ -16,6 +16,10 @@ jobs:
        uses: stCarolas/setup-maven@v4.5
        with:
         maven-version: 3.8.2          
+     - uses: actions/setup-java@v3
+       with:
+         java-version: '11'
+         distribution: 'temurin'               
      - name: Build
        run: |
          cd $GITHUB_WORKSPACE
@@ -40,11 +44,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: jpo-sdw-depositor
-          path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
-      - name: Find jacoco.xml
-        shell: bash
-        run: |
-          find "home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target" -name "jacoco.xml"           
+          path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target           
       - name: Setup SonarScanner
         uses: warchant/setup-sonar-scanner@v4
         with:
@@ -55,6 +55,7 @@ jobs:
           sonar.host.url=https://sonarcloud.io
           sonar.coverage.jacoco.xmlReportPaths=/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target/site/jacoco/jacoco.xml
           sonar.java.binaries=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
+          sonar.junit.reportsPath=**/target/surefire-reports/*
           sonar.projectName=jpo-sdw-depositor
           sonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor
           sonar.organization=usdot-jpo-ode-1
