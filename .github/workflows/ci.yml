@@ -24,7 +24,8 @@ jobs:
        run: |
          cd $GITHUB_WORKSPACE
          ls -ls && pwd
-         mvn --batch-mode --update-snapshots verify 
+         mvn -e -X clean org.jacoco:jacoco-maven-plugin:prepare-agent package
+         mvn -e -X clean org.jacoco:jacoco-maven-plugin:report package
      - name: Archive code coverage results
        uses: actions/upload-artifact@v3
        with:
@@ -44,7 +45,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: jpo-sdw-depositor
-          path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target           
+          path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target     
+      - name: Find jacoco.xml
+        shell: bash
+        run: |
+          find "$GITHUB_WORKSPACE" -name "jacoco.xml"                
       - name: Setup SonarScanner
         uses: warchant/setup-sonar-scanner@v4
         with:
@@ -55,7 +60,6 @@ jobs:
           sonar.host.url=https://sonarcloud.io
           sonar.coverage.jacoco.xmlReportPaths=/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target/site/jacoco/jacoco.xml
           sonar.java.binaries=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
-          sonar.junit.reportsPath=**/target/surefire-reports/*
           sonar.projectName=jpo-sdw-depositor
           sonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor
           sonar.organization=usdot-jpo-ode-1
