@@ -6,6 +6,10 @@ Subscribes to a Kafka topic and deposits messages to the Situation Data Warehous
 
 This is a submodule of the [jpo-ode](https://github.com/usdot-jpo-ode/jpo-ode) repository. It subscribes to a Kafka topic and listens for incoming messages. Upon message arrival, this application deposits it over REST to the SDX.
 
+
+## Release Notes
+The current version and release history of the Jpo-sdw-depositor: [Jpo-sdw-depositor Release Notes](<docs/Release_notes.md>)
+
 # Installation and Operation
 
 ### Requirements
