@@ -1,7 +1,22 @@
 Jpo-sdw-depositor Release Notes
 ----------------------------
 
-Version 1.0.0, released Mar 30th 2023
+Version 1.4.0, released July 5th 2023
+----------------------------------------
+
+### **Summary**
+The updates for jpo-sdw-depositor 1.4.0 include CI/CD & dependency changes.
+
+Enhancements in this release:
+- Added CI/CD for Docker Build & Sonar Cloud
+
+Fixes in this release:
+- Bumped json from 20180130 to 20230227
+
+Known Issues
+- A non-critical error is occurring in the console occasionally. It is worth noting that the logs indicate successful message deposits to the SDX without encountering this error. Therefore, the problem seems to occur intermittently.
+
+Version 1.3.0, released Mar 30th 2023
 ----------------------------------------
 
 ### **Summary**
