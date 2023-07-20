@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
+
 import jpo.sdw.depositor.depositors.RestDepositor;
 
 public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
@@ -55,6 +57,12 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
          if (records.count() != 0) {
             this.jsonMsgList.put("depositRequests", jsonRequests);
             this.getRestDepositor().deposit(jsonMsgList.toString());
+         }
+         try {
+            // add 1 second sleep between sending messages to SDX
+            TimeUnit.SECONDS.sleep(1);
+         } catch (InterruptedException e) {
+            logger.error("InterruptedException: {}", e.getMessage());
          }
       }
    }
