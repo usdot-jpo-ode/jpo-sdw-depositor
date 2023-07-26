@@ -11,8 +11,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
-
 import jpo.sdw.depositor.depositors.RestDepositor;
 
 public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
@@ -40,7 +38,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
       this.setRestDepositor(restDepositor);
       this.jsonMsgList = new JSONObject();
       this.jsonMsg = new JSONObject();
-      this.jsonMsg.put("EncodeType", encodeType);
+      this.jsonMsg.put("encodeType", encodeType);
    }
 
    @Override
@@ -51,18 +49,12 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
          JSONArray jsonRequests = new JSONArray();
          for (ConsumerRecord<String, String> record : records) {
             logger.info("Depositing message {}", record);
-            this.jsonMsg.put("EncodedMsg", record.value());
-            jsonRequests.put(jsonMsg);
+            this.jsonMsg.put("encodedMsg", record.value());
+            jsonRequests.put(new JSONObject(jsonMsg.toString()));
          }
          if (records.count() != 0) {
             this.jsonMsgList.put("depositRequests", jsonRequests);
             this.getRestDepositor().deposit(jsonMsgList.toString());
-         }
-         try {
-            // add 1 second sleep between sending messages to SDX
-            TimeUnit.SECONDS.sleep(1);
-         } catch (InterruptedException e) {
-            logger.error("InterruptedException: {}", e.getMessage());
          }
       }
    }
