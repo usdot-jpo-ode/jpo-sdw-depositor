@@ -61,7 +61,7 @@ jobs:
           sonar.java.binaries=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
           sonar.projectName=jpo-sdw-depositor
           sonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor
-          sonar.organization=usdot-jpo-ode-1
+          sonar.organization=usdot-jpo-ode
           jpo-sdw-depositor.sonar.projectBaseDir=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor
           jpo-sdw-depositor.sonar.sources=src
           jpo-sdw-depositor.sonar.tests=src/test
