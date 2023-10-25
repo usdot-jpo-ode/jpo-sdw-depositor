@@ -61,8 +61,9 @@ public class DepositorProperties implements EnvironmentAware {
       if (getEncodeType() == null)
          setEncodeType(DEFAULT_ENCODE_TYPE);
 
-      if (getDestinationUrl() == null)
+      if (getDestinationUrl() == null || getDestinationUrl().isEmpty()) {
          setDestinationUrl(DEFAULT_DESTINATION_URL);
+      }
 
       if (getSubscriptionTopics() == null || getSubscriptionTopics().length == 0) {
          String topics = String.join(",", DEFAULT_SUBSCRIPTION_TOPICS);
