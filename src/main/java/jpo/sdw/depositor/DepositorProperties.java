@@ -20,7 +20,7 @@ public class DepositorProperties implements EnvironmentAware {
 
    private static final String DEFAULT_GROUP_ID = "usdot.jpo.sdw";
    private static final String DEFAULT_KAFKA_PORT = "9092";
-   private static final String DEFAULT_DESTINATION_URL = "https://sdx-service.trihydro.com/api/deposit";
+   private static final String DEFAULT_DESTINATION_URL = "https://sdx-service.trihydro.com/api/deposit-multi";
    private static final String[] DEFAULT_SUBSCRIPTION_TOPICS = { "topic.SDWDepositorInput" };
    private static final String DEFAULT_ENCODE_TYPE = "hex";
 
@@ -61,8 +61,9 @@ public class DepositorProperties implements EnvironmentAware {
       if (getEncodeType() == null)
          setEncodeType(DEFAULT_ENCODE_TYPE);
 
-      if (getDestinationUrl() == null)
+      if (getDestinationUrl() == null || getDestinationUrl().isEmpty()) {
          setDestinationUrl(DEFAULT_DESTINATION_URL);
+      }
 
       if (getSubscriptionTopics() == null || getSubscriptionTopics().length == 0) {
          String topics = String.join(",", DEFAULT_SUBSCRIPTION_TOPICS);

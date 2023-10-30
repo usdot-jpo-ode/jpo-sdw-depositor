@@ -38,7 +38,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
       this.setRestDepositor(restDepositor);
       this.jsonMsgList = new JSONObject();
       this.jsonMsg = new JSONObject();
-      this.jsonMsg.put("EncodeType", encodeType);
+      this.jsonMsg.put("encodeType", encodeType);
    }
 
    @Override
@@ -49,8 +49,8 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
          JSONArray jsonRequests = new JSONArray();
          for (ConsumerRecord<String, String> record : records) {
             logger.info("Depositing message {}", record);
-            this.jsonMsg.put("EncodedMsg", record.value());
-            jsonRequests.put(jsonMsg);
+            this.jsonMsg.put("encodedMsg", record.value());
+            jsonRequests.put(new JSONObject(jsonMsg.toString()));
          }
          if (records.count() != 0) {
             this.jsonMsgList.put("depositRequests", jsonRequests);
