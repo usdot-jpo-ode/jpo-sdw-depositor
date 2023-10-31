@@ -26,13 +26,13 @@ public class DepositControllerTest {
    JavaMailSender sender;
 
    @Mocked
-   KafkaConsumerFactory capturingKafkaConsumerFactory;
+   KafkaConsumerFactory mockedCapturingKafkaConsumerFactory;
 
    @Mocked
-   KafkaConsumerRestDepositor capturingKafkaConsumerRestDepositor;
+   KafkaConsumerRestDepositor mockedCapturingKafkaConsumerRestDepositor;
    
    @Mocked
-   URI capturingURI;
+   URI mockedCapturingURI;
 
    @Test
    public void shouldRun() throws URISyntaxException {
@@ -41,7 +41,7 @@ public class DepositControllerTest {
          {
             injectableDepositorProperties.getDestinationUrl(); result = "127.0.0.1";
 
-            capturingKafkaConsumerRestDepositor.run((String[]) any);
+            mockedCapturingKafkaConsumerRestDepositor.run((String[]) any);
             times = 1;
          }
       };
