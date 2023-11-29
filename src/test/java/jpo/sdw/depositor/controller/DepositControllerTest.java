@@ -8,10 +8,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import jpo.sdw.depositor.DepositorProperties;
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor;
-import mockit.Capturing;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
+import mockit.Mocked;
+
 
 public class DepositControllerTest {
 
@@ -24,21 +25,23 @@ public class DepositControllerTest {
    @Injectable
    JavaMailSender sender;
 
-   @Capturing
-   KafkaConsumerFactory capturingKafkaConsumerFactory;
+   @Mocked
+   KafkaConsumerFactory mockedCapturingKafkaConsumerFactory;
 
-   @Capturing
-   KafkaConsumerRestDepositor capturingKafkaConsumerRestDepositor;
+   @Mocked
+   KafkaConsumerRestDepositor mockedCapturingKafkaConsumerRestDepositor;
    
-   @Capturing
-   URI capturingURI;
+   @Mocked
+   URI mockedCapturingURI;
 
-   // currently not running, seems to be in endless loop somewhere
-   // @Test
+   @Test
    public void shouldRun() throws URISyntaxException {
+
       new Expectations() {
          {
-            capturingKafkaConsumerRestDepositor.run((String[]) any);
+            injectableDepositorProperties.getDestinationUrl(); result = "127.0.0.1";
+
+            mockedCapturingKafkaConsumerRestDepositor.run((String[]) any);
             times = 1;
          }
       };
