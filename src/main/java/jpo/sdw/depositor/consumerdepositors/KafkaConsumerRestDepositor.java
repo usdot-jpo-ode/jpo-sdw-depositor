@@ -50,7 +50,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
          for (ConsumerRecord<String, String> record : records) {
             logger.info("Depositing message {}", record);
 
-            JSONObject depositMessage = PrepareJSONObject(record.value());
+            JSONObject depositMessage = prepareJSONObject(record.value());
 
             jsonRequests.put(new JSONObject(depositMessage.toString()));
          }
@@ -61,7 +61,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
       }
    }
 
-   private JSONObject PrepareJSONObject(String record) {
+   private JSONObject prepareJSONObject(String record) {
       // Old version treated record as value for static field "encodedMsg"
       // Try/Catch around new optional json object to attach meta data. Fall back if
       // record isn't json.

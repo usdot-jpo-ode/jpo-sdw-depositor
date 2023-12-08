@@ -44,7 +44,7 @@ public class KafkaConsumerRestDepositorTest {
    public void runShouldDepositMessage() {
 
       List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
-      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", null));
+      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", "Message"));
 
       Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, String>>>();
       recordsMap.put(new TopicPartition("string", 0), crList);
@@ -102,7 +102,7 @@ public class KafkaConsumerRestDepositorTest {
             injectableKafkaConsumer.poll((Duration)any);
             result = testConsumerRecords;
 
-            injectableRestDepositor.deposit(anyString);
+            injectableRestDepositor.deposit("{\"depositRequests\":[{\"encodeType\":\"\",\"encodedMsg\":\"C4400000000680C0DE3\"}]}");
             times = 1;
          }
       };
