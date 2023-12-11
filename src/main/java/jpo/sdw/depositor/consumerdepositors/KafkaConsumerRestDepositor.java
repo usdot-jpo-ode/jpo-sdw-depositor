@@ -30,15 +30,14 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
    private RestDepositor<String> restDepositor;
    private KafkaConsumer<String, String> kafkaConsumer;
    private JSONObject jsonMsgList;
-   private JSONObject jsonMsg;
+   private String encodeType;
 
    public KafkaConsumerRestDepositor(KafkaConsumer<String, String> kafkaConsumer, RestDepositor<String> restDepositor,
          String encodeType) {
       this.setKafkaConsumer(kafkaConsumer);
       this.setRestDepositor(restDepositor);
       this.jsonMsgList = new JSONObject();
-      this.jsonMsg = new JSONObject();
-      this.jsonMsg.put("encodeType", encodeType);
+      this.encodeType = encodeType;
    }
 
    @Override
@@ -47,16 +46,35 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
       while (LoopController.loop()) { // NOSONAR (used for unit testing)
          ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(Duration.ofMillis(100));
          JSONArray jsonRequests = new JSONArray();
+
          for (ConsumerRecord<String, String> record : records) {
             logger.info("Depositing message {}", record);
-            this.jsonMsg.put("encodedMsg", record.value());
-            jsonRequests.put(new JSONObject(jsonMsg.toString()));
+
+            JSONObject depositMessage = prepareJSONObject(record.value());
+
+            jsonRequests.put(new JSONObject(depositMessage.toString()));
          }
          if (records.count() != 0) {
             this.jsonMsgList.put("depositRequests", jsonRequests);
             this.getRestDepositor().deposit(jsonMsgList.toString());
          }
       }
+   }
+
+   private JSONObject prepareJSONObject(String record) {
+      // Old version treated record as value for static field "encodedMsg"
+      // Try/Catch around new optional json object to attach meta data. Fall back if
+      // record isn't json.
+      JSONObject deposit = new JSONObject();
+      deposit.put("encodeType", this.encodeType);
+      try {
+         JSONObject recordObj = new JSONObject(record);
+         deposit.put("encodedMsg", recordObj.getString("encodedMsg"));
+         deposit.put("expirationDate", recordObj.opt("expirationDate"));
+      } catch (Exception e) {
+         deposit.put("encodedMsg", record);
+      }
+      return deposit;      
    }
 
    public RestDepositor<String> getRestDepositor() {
