@@ -1,6 +1,20 @@
 Jpo-sdw-depositor Release Notes
 ----------------------------
 
+Version 1.5.0, released November 2023
+----------------------------------------
+
+### **Summary**
+The updates for the jpo-sdw-depositor 1.5.0 involve correcting the default SDX URL, fixing failing unit tests, and addressing a key reference issue in KafkaConsumerRestDepositor.java.
+- The default SDX URL has been corrected.
+- Resolved failing unit tests.
+- Addressed a key reference issue in KafkaConsumerRestDepositor.java.
+- Renamed mocked variables in DepositControllerTest.java
+
+Known Issues:
+- No known issues at this time.
+
+
 Version 1.4.0, released July 5th 2023
 ----------------------------------------
 
