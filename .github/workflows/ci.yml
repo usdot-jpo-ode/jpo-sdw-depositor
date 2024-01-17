@@ -48,11 +48,13 @@ jobs:
       - name: Find jacoco.xml
         shell: bash
         run: |
-          find "$GITHUB_WORKSPACE" -name "jacoco.xml"                
+          find "$GITHUB_WORKSPACE" -name "jacoco.xml"  
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  
+          java-version: '21'
       - name: Setup SonarScanner
         uses: warchant/setup-sonar-scanner@v7
-        with:
-          version: 4.8.0.2856
       - name: Generate sonar properties file
         run: |
           cat <<EOF > /tmp/sonar-scanner.properties
