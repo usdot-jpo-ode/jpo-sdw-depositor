@@ -70,7 +70,7 @@ public class KafkaConsumerRestDepositor extends KafkaConsumerDepositor<String> {
       try {
          JSONObject recordObj = new JSONObject(record);
          deposit.put("encodedMsg", recordObj.getString("encodedMsg"));
-         deposit.put("expirationDate", recordObj.opt("expirationDate"));
+         deposit.put("estimatedRemovalDate", recordObj.opt("estimatedRemovalDate"));
       } catch (Exception e) {
          deposit.put("encodedMsg", record);
       }
