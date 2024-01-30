@@ -1,6 +1,20 @@
 Jpo-sdw-depositor Release Notes
 ----------------------------
 
+Version 1.6.0, released February 2024
+----------------------------------------
+
+### **Summary**
+The changes for the jpo-sdw-depositor 1.6.0 release include a java update & dockerhub image documentation.
+
+Enhancements in this release:
+- CDOT PR 12: Updated Java to v21
+- CDOT PR 11: Added dockerhub image documentation
+
+Known Issues:
+- No known issues at this time.
+
+
 Version 1.5.0, released November 2023
 ----------------------------------------
 
