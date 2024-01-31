@@ -9,7 +9,7 @@ jobs:
   jpo-sdw-depositor:
    runs-on: ubuntu-latest
    container:
-     image: openjdk:17-jdk-slim-buster
+     image: openjdk:21-jdk-slim-buster
      options: --user root
    steps:
      - name: Checkout ${{ github.event.repository.name }}
@@ -17,11 +17,7 @@ jobs:
      - name: Set up Maven
        uses: stCarolas/setup-maven@v4.5
        with:
-        maven-version: 3.8.2          
-     - uses: actions/setup-java@v3
-       with:
-         java-version: '11'
-         distribution: 'temurin'               
+        maven-version: 3.8.2               
      - name: Build
        run: |
          cd $GITHUB_WORKSPACE
