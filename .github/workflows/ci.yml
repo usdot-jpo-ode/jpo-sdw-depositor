@@ -7,16 +7,16 @@ jobs:
   jpo-sdw-depositor:
    runs-on: ubuntu-latest
    container:
-     image: openjdk:17-jdk-slim-buster
+     image: openjdk:21-jdk-slim-buster
      options: --user root
    steps:
      - name: Checkout ${{ github.event.repository.name }}
-       uses: actions/checkout@v3    
+       uses: actions/checkout@v4
      - name: Set up Maven
        uses: stCarolas/setup-maven@v4.5
        with:
-        maven-version: 3.8.2          
-     - uses: actions/setup-java@v3
+        maven-version: 3.9.6
+     - uses: actions/setup-java@v4
        with:
          java-version: '21'
          distribution: 'temurin'               
@@ -27,7 +27,7 @@ jobs:
          mvn -e -X clean org.jacoco:jacoco-maven-plugin:prepare-agent package
          mvn -e -X clean org.jacoco:jacoco-maven-plugin:report package
      - name: Archive code coverage results
-       uses: actions/upload-artifact@v3
+       uses: actions/upload-artifact@v4
        with:
          name: jpo-sdw-depositor
          path: /__w/jpo-sdw-depositor/jpo-sdw-depositor/target 
@@ -37,11 +37,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0   
       - name: Download code coverage results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: jpo-sdw-depositor
           path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target     
@@ -49,10 +49,6 @@ jobs:
         shell: bash
         run: |
           find "$GITHUB_WORKSPACE" -name "jacoco.xml"  
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'  
-          java-version: '21'
       - name: Setup SonarScanner
         uses: warchant/setup-sonar-scanner@v7
       - name: Generate sonar properties file
