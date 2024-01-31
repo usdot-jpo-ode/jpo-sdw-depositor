@@ -7,7 +7,7 @@ jobs:
   jpo-sdw-depositor:
    runs-on: ubuntu-latest
    container:
-     image: openjdk:17-jdk-slim-buster
+     image: openjdk:21-jdk-slim-buster
      options: --user root
    steps:
      - name: Checkout ${{ github.event.repository.name }}
