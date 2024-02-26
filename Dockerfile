@@ -1,5 +1,5 @@
 # Build container
-FROM maven:3.5.4-jdk-8-alpine as builder
+FROM maven:3.8-eclipse-temurin-21-alpine as builder
 MAINTAINER 583114@bah.com
 
 WORKDIR /home
@@ -11,11 +11,11 @@ COPY ./src ./src
 RUN mvn clean package -DskipTests
 
 # Run container
-FROM eclipse-temurin:11-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /home
-COPY --from=builder /home/target/jpo-sdw-depositor-1.3.0.jar /home
+COPY --from=builder /home/target/jpo-sdw-depositor-1.6.0-SNAPSHOT.jar /home
 
 ENTRYPOINT ["java", \
 	"-jar", \
-	"/home/jpo-sdw-depositor-1.3.0.jar"]
+	"/home/jpo-sdw-depositor-1.6.0-SNAPSHOT.jar"]

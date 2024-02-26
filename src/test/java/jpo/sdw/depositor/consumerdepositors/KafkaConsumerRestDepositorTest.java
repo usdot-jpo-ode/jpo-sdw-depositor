@@ -16,6 +16,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor.LoopController;
@@ -43,7 +44,7 @@ public class KafkaConsumerRestDepositorTest {
    public void runShouldDepositMessage() {
 
       List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
-      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", null));
+      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", "Message"));
 
       Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, String>>>();
       recordsMap.put(new TopicPartition("string", 0), crList);
@@ -67,6 +68,76 @@ public class KafkaConsumerRestDepositorTest {
             result = testConsumerRecords;
 
             injectableRestDepositor.deposit(anyString);
+            times = 1;
+         }
+      };
+
+      testKafkaConsumerRestDepositor.run("testTopic");
+   }
+
+    @Test
+   public void runShouldDepositJSONMessage() {
+
+      List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
+      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", "{\"encodedMsg\":\"C4400000000680C0DE3\"}"));
+
+      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, String>>>();
+      recordsMap.put(new TopicPartition("string", 0), crList);
+
+      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<String, String>(recordsMap);
+
+      new MockUp<LoopController>() {
+         @Mock
+         public boolean loop(Invocation inv) {
+            if (inv.getInvocationIndex() == 0) {
+               return true;
+            } else {
+               return false;
+            }
+         }
+      };
+
+      new Expectations() {
+         {
+            injectableKafkaConsumer.poll((Duration)any);
+            result = testConsumerRecords;
+
+            injectableRestDepositor.deposit("{\"depositRequests\":[{\"encodeType\":\"\",\"encodedMsg\":\"C4400000000680C0DE3\"}]}");
+            times = 1;
+         }
+      };
+
+      testKafkaConsumerRestDepositor.run("testTopic");
+   }
+
+   @Test
+   public void runShouldDepositJSONEstimatedRemovalDateMessage() {
+
+      List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
+      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", "{\"encodedMsg\":\"C4400000000680C0DE3\",\"estimatedRemovalDate\":\"2023-12-01T17:47:11-05:15\"}"));
+
+      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, String>>>();
+      recordsMap.put(new TopicPartition("string", 0), crList);
+
+      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<String, String>(recordsMap);
+
+      new MockUp<LoopController>() {
+         @Mock
+         public boolean loop(Invocation inv) {
+            if (inv.getInvocationIndex() == 0) {
+               return true;
+            } else {
+               return false;
+            }
+         }
+      };
+
+      new Expectations() {
+         {
+            injectableKafkaConsumer.poll((Duration)any);
+            result = testConsumerRecords;
+
+            injectableRestDepositor.deposit("{\"depositRequests\":[{\"encodeType\":\"\",\"encodedMsg\":\"C4400000000680C0DE3\",\"estimatedRemovalDate\":\"2023-12-01T17:47:11-05:15\"}]}");
             times = 1;
          }
       };
