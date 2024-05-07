@@ -1,4 +1,4 @@
-# jpo-sdw-depositor [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot.jpo.ode%3Ajpo-sdw-depositor&metric=alert_status)](https://sonarcloud.io/dashboard?id=usdot.jpo.ode%3Ajpo-sdw-depositor)
+# jpo-sdw-depositor
 
 Subscribes to a Kafka topic and deposits messages to the Situation Data Warehouse (SDW).
 
