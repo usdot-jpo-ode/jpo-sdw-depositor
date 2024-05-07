@@ -13,30 +13,48 @@ The current version and release history of the jpo-sdw-depositor project: [jpo-s
 
 ### Requirements
 
-- Docker
+- [Kafka](https://kafka.apache.org/)
+- [Docker](https://www.docker.com/)
 
-### Option 1: Standalone
+### Option 1: As ODE submodule
+The jpo-sdw-depositor is intended to be run as a submodule of the [jpo-ode](https://github.com/usdot-jpo-ode/jpo-ode) project. The ODE project repository includes a docker-compose file that will run the depositor in conjunction with the ODE by default. The same environment variables mentioned in the [Configuration Reference](#configuration-reference) below will need to be set in the `.env` file in the root of the ODE project.
 
-Use this option when you want to run the depositor by itself. This will listen to any Kafka topic you specify and deposit messages to the Situation Data Exchange.
+### Option 2: Standalone (Depositor Only) with Remote Kafka
 
-1. Configure your desired properties. See **Configuration Reference** at the bottom of this README.
-2. Rename your `sample.env` file to `.env` if you haven't already done so
-3. Execute the `run.sh` script OR execute these commands:
+Use this option when you want to run the depositor by itself and you already have a Kafka cluster running remotely. This option will run the depositor in a Docker container and connect to a remote Kafka cluster to listen for messages. The depositor will then deposit these messages to the SDX.
+
+1. Rename your `sample.env` file to `.env`. This file contains the environment variables that the application will use to connect to Kafka and the SDX.
+1. Configure your environment variables in the `.env` file. See the [Configuration Reference](#configuration-reference) below.
+1. Execute the `run.sh` script OR execute these commands:
 
 ```
-docker build -t jpo-sdw-depositor . 
+docker build -t jpo-sdw-depositor .
 docker run --rm  --env-file .env jpo-sdw-depositor:latest
 ```
 
+### Option 3: With Local Kafka
+Use this option when you want to run the depositor and you want to run a local Kafka cluster alongside it. This option will run the depositor and a Kafka cluster in Docker containers. The depositor will listen for messages on the local Kafka cluster and deposit them to the SDX.
 
-### Option 2: As ODE submodule
+1. Rename your `sample.env` file to `.env`. This file contains the environment variables that the application will use to connect to Kafka and the SDX.
+1. Configure your environment variables in the `.env` file. See the [Configuration Reference](#configuration-reference) below.
+1. Run the following command:
 
-** IN PROGRESS! Further instructions pending ODE compatibility. **
+```
+docker compose -f docker-compose-confluent-cloud.yml up --build
+```
 
-Use this option when you want to run this module in conjuction with the [jpo-ode](https://github.com/usdot-jpo-ode/jpo-ode). The only action you must take here is to set the configuration properties in the env file. See the bottom of this README for a reference.
+### Option 4: With Confluent Cloud Kafka
+Use this option when you want to run the depositor and you want to connect to a Kafka cluster hosted by Confluent Cloud. This option will run the depositor in a Docker container and connect to a Kafka cluster hosted by Confluent Cloud to listen for messages. The depositor will then deposit these messages to the SDX.
 
+1. Rename your `sample.env` file to `.env`. This file contains the environment variables that the application will use to connect to Kafka and the SDX.
+1. Configure your environment variables in the `.env` file. See the [Configuration Reference](#configuration-reference) below.
+1. Run the following command:
 
+```
+docker compose -f docker-compose-confluent-cloud.yml up --build
+```
 
+See the [Confluent Cloud Integration](#confluent-cloud-integration) section for more information.
 
 ## Configuration Reference
 
