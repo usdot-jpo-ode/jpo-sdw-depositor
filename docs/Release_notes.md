@@ -1,4 +1,4 @@
-Jpo-sdw-depositor Release Notes
+jpo-sdw-depositor Release Notes
 ----------------------------
 
 Version 1.6.0, released February 2024
