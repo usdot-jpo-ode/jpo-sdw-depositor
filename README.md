@@ -1,6 +1,6 @@
 # jpo-sdw-depositor
 
-Subscribes to a Kafka topic and deposits messages to the Situation Data Warehouse (SDW).
+Subscribes to a Kafka topic and deposits messages to the [Situational Data Exchange (SDX)](https://sdx.trihydro.com/).
 
 # Overview
 
