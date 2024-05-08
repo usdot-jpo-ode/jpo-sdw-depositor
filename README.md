@@ -79,6 +79,21 @@ N/A | KAFKA_TYPE | Type of Kafka connection to be used. Options are "LOCAL" or "
 N/A | CONFLUENT_KEY | Confluent Cloud API Key | (n/a)
 N/A | CONFLUENT_SECRET | Confluent Cloud API Secret | (n/a)
 
+## Unit Testing
+The unit tests can be run by executing the following command from the root directory of the project:
+```
+mvn test
+```
+
+It should be noted that Maven & Java are required to run the unit tests. If you do not have Maven or Java installed, you can reopen the project in the provided dev container and run the tests from there.
+
+## Object data consumption
+The KafkaConsumerRestDepositor will accept any string as input to be passed into the SDW. If provided a JSON object, the tokens of "encodedMsg" and "estimatedRemovalDate" will be passed through directly to the SDW in the form of the following:
+{depositRequests:[{"encodeType": STRING ,"encodedMsg": STRING, "estimatedRemovalDate": STRING}]}
+
+If provided a string of non-json form, the value of "encodedMsg" will inherit the passed value and information will be passed to the SDW in the form of the following:
+{depositRequests:[{"encodeType": STRING ,"encodedMsg": STRING}]}
+
 ## Confluent Cloud Integration
 Rather than using a local kafka instance, this project can utilize an instance of kafka hosted by Confluent Cloud via SASL.
 
@@ -99,18 +114,3 @@ There is a provided docker-compose file (docker-compose-confluent-cloud.yml) tha
 
 ### Note
 This has only been tested with Confluent Cloud but technically all SASL authenticated Kafka brokers can be reached using this method.
-
-## Unit Testing
-The unit tests can be run by executing the following command from the root directory of the project:
-```
-mvn test
-```
-
-It should be noted that Maven & Java are required to run the unit tests. If you do not have Maven or Java installed, you can reopen the project in the provided dev container and run the tests from there.
-
-## Object data consumption
-The KafkaConsumerRestDepositor will accept any string as input to be passed into the SDW. If provided a JSON object, the tokens of "encodedMsg" and "estimatedRemovalDate" will be passed through directly to the SDW in the form of the following:
-{depositRequests:[{"encodeType": STRING ,"encodedMsg": STRING, "estimatedRemovalDate": STRING}]}
-
-If provided a string of non-json form, the value of "encodedMsg" will inherit the passed value and information will be passed to the SDW in the form of the following:
-{depositRequests:[{"encodeType": STRING ,"encodedMsg": STRING}]}
