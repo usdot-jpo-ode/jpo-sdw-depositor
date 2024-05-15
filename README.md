@@ -40,7 +40,7 @@ Use this option when you want to run the depositor and you want to run a local K
 1. Run the following command:
 
 ```
-docker compose -f docker-compose-confluent-cloud.yml up --build
+docker compose up --build
 ```
 
 ### Option 4: With Confluent Cloud Kafka
