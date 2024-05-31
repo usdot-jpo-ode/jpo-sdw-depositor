@@ -14,8 +14,8 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /home
-COPY --from=builder /home/target/jpo-sdw-depositor-1.6.0-SNAPSHOT.jar /home
+COPY --from=builder /home/target/jpo-sdw-depositor-1.7.0-SNAPSHOT.jar /home
 
 ENTRYPOINT ["java", \
 	"-jar", \
-	"/home/jpo-sdw-depositor-1.6.0-SNAPSHOT.jar"]
+	"/home/jpo-sdw-depositor-1.7.0-SNAPSHOT.jar"]
