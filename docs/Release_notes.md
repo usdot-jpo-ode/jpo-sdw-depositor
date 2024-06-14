@@ -1,5 +1,15 @@
-Jpo-sdw-depositor Release Notes
+jpo-sdw-depositor Release Notes
 ----------------------------
+
+Version 1.7.0, released June 2024
+----------------------------------------
+### **Summary**
+The changes for the jpo-sdw-depositor 1.7.0 release include a Java update for the dev container, as well as revised documentation for accuracy and improved clarity/readability.
+
+Enhancements in this release
+- CDOT PR 19: Updated dev container to use Java 21
+- CDOT PR 20: Revised documentation for accuracy & improved clarity/readability
+
 
 Version 1.6.0, released February 2024
 ----------------------------------------
