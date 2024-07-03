@@ -108,6 +108,9 @@
                   <loader.path>${loader.path}</loader.path>
                   <buildDirectory>${project.build.directory}</buildDirectory>
                </systemPropertyVariables>
+               <environmentVariables>
+                  <SDW_SUBSCRIPTION_TOPIC>testSubscriptionTopic</SDW_SUBSCRIPTION_TOPIC>
+                </environmentVariables>
             </configuration>
             <dependencies>
                <dependency>
