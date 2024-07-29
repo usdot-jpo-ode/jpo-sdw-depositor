@@ -139,7 +139,7 @@ To use this library in another application, add the GitHub package URLs to the `
         </repository>
         <repository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/usdot-jpo-ode/jpo-security-svcs</url>
+          <url>https://maven.pkg.github.com/usdot-jpo-ode/jpo-sdw-depositor</url>
         </repository>
       </repositories>
     </profile>
@@ -162,7 +162,7 @@ And add the following line to the `dependencies` element in `build.gradle`
 <dependencies>
   <dependency>
     <groupId>usdot.jpo.ode</groupId>
-    <artifactId>jpo-security-svcs</artifactId>
+    <artifactId>jpo-sdw-depositor</artifactId>
     <version>1.0.0</version>
   </dependency>
 </dependencies>

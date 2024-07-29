@@ -3,7 +3,7 @@ name: Publish Java Package
 on:
   # push:
   #   tags:
-  #     - 'jpo-security-svcs-*'
+  #     - 'jpo-sdw-depositor-*'
   pull_request:
     types: [opened, reopened, synchronize]
 
