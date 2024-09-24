@@ -1,6 +1,16 @@
 jpo-sdw-depositor Release Notes
 ----------------------------
 
+Version 1.8.0, released September 2024
+----------------------------------------
+### **Summary**
+The changes for the jpo-sdw-depositor 1.8.0 release include a fix for the SDW_SUBSCRIPTION_TOPIC environment variable not getting used instead of the default if provided, as well as the addition of a GitHub action to publish Java artifacts to GitHub's hosted Maven Central.
+
+Enhancements in this release:
+- CDOT PR 24: Fixed SDW_SUBSCRIPTION_TOPIC environment variable not getting used instead of default if provided
+- CDOT PR 25: Added a GiHub action to opublish java artifacts to GitHub's hosted Maven Central
+
+
 Version 1.7.0, released June 2024
 ----------------------------------------
 ### **Summary**
