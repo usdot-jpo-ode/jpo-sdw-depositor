@@ -13,7 +13,7 @@
    </parent>
    <groupId>usdot.jpo.ode</groupId>
    <artifactId>jpo-sdw-depositor</artifactId>
-   <version>1.7.0-SNAPSHOT</version>
+   <version>1.8.0-SNAPSHOT</version>
    <packaging>jar</packaging>
    <name>jpo-sdw-depositor</name>
 
@@ -30,6 +30,7 @@
       <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
       <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
       <sonar.language>java</sonar.language>
+      <github_organization>usdot-jpo-ode</github_organization>
    </properties>
 
    <dependencies>
@@ -108,6 +109,9 @@
                   <loader.path>${loader.path}</loader.path>
                   <buildDirectory>${project.build.directory}</buildDirectory>
                </systemPropertyVariables>
+               <environmentVariables>
+                  <SDW_SUBSCRIPTION_TOPIC>testSubscriptionTopic</SDW_SUBSCRIPTION_TOPIC>
+                </environmentVariables>
             </configuration>
             <dependencies>
                <dependency>
@@ -139,4 +143,11 @@
          </plugin>
       </plugins>
    </build>
+   <distributionManagement>
+      <repository>
+         <id>github</id>
+         <name>GitHub Packages</name>
+         <url>https://maven.pkg.github.com/${github_organization}/jpo-sdw-depositor</url>
+      </repository>
+   </distributionManagement>
 </project>

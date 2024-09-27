@@ -114,3 +114,61 @@ There is a provided docker-compose file (docker-compose-confluent-cloud.yml) tha
 
 ### Note
 This has only been tested with Confluent Cloud but technically all SASL authenticated Kafka brokers can be reached using this method.
+
+## GitHub Artifact Usage
+
+To use this library in another application, add the GitHub package URLs to the `repositories` section in `pom.xml` of the consumer application or in your local `~/.m2/settings.xml` file. Here is an example implementation of using the GitHub artifact in a consumer application:
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/usdot-jpo-ode/jpo-sdw-depositor</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>github</id>
+      <username>${env.PACKAGE_READ_USERNAME}</username>
+      <password>${env.PACKAGE_READ_TOKEN}</password>
+    </server>
+  </servers>
+
+</settings>
+```
+
+And add the following line to the `dependencies` element in `build.gradle`
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>usdot.jpo.ode</groupId>
+    <artifactId>jpo-sdw-depositor</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+</dependencies>
+```
+
+Finally, set the environment variables:
+
+* PACKAGE_READ_USERNAME - User name with read access to the repositories containing the packages.
+* PACKAGE_READ_TOKEN - Personal access token with `read:packages` scope.

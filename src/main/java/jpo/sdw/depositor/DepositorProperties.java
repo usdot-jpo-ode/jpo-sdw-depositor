@@ -2,8 +2,6 @@ package jpo.sdw.depositor;
 
 import java.util.regex.Pattern;
 
-import jakarta.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+
+import jakarta.annotation.PostConstruct;
 
 @ConfigurationProperties("sdw")
 @PropertySource("classpath:application.properties")
@@ -66,9 +66,15 @@ public class DepositorProperties implements EnvironmentAware {
       }
 
       if (getSubscriptionTopics() == null || getSubscriptionTopics().length == 0) {
-         String topics = String.join(",", DEFAULT_SUBSCRIPTION_TOPICS);
-         logger.info("No Kafka subscription topics specified in configuration, defaulting to {}", topics);
-         subscriptionTopics = DEFAULT_SUBSCRIPTION_TOPICS;
+         // get environment variable SDW_SUBSCRIPTION_TOPIC
+         String topics = System.getenv("SDW_SUBSCRIPTION_TOPIC");
+         if (topics == null || topics.isEmpty()) {
+            topics = String.join(",", DEFAULT_SUBSCRIPTION_TOPICS);
+            logger.info("No Kafka subscription topics specified in configuration, defaulting to {}", topics);
+            subscriptionTopics = DEFAULT_SUBSCRIPTION_TOPICS;
+         } else {
+            subscriptionTopics = topics.split(",");
+         }
       }
 
       if (getApiKey() == null || getApiKey().isEmpty()) {
