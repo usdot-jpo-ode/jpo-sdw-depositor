@@ -4,7 +4,13 @@ jpo-sdw-depositor Release Notes
 Version 1.9.0, released January 2025
 ----------------------------------------
 ### **Summary**
-The jpo-sdw-depositor 1.9.0 release simplifies and improves the Docker build process by automating the handling of versioned jar files, eliminating the need for manual updates to the Dockerfile with each new version. The Dockerfile now ensures versioned jars are copied to an unversioned name within the Docker image, allowing the application to reference a static file name while preserving versioned jars for distribution. Additionally, polish updates were made to modernize and streamline the build process, including replacing the deprecated MAINTAINER field with LABEL maintainer, resolving casing inconsistencies in Docker commands, and cleaning up unnecessary configurations in .devcontainer.json based on linter recommendations. These changes enhance reliability and maintainability while reducing the risk of errors.
+The jpo-sdw-depositor 1.9.0 release simplifies and improves the Docker build process by automating the handling of 
+versioned jar files, eliminating the need for manual updates to the Dockerfile with each new version. The Dockerfile now
+ensures versioned jars are copied to an unversioned name within the Docker image, allowing the application to reference 
+a static file name while preserving versioned jars for distribution. Additionally, polish updates were made to modernize 
+and streamline the build process, including replacing the deprecated MAINTAINER field with LABEL maintainer, resolving 
+casing inconsistencies in Docker commands, and cleaning up unnecessary configurations in .devcontainer.json based on 
+linter recommendations. These changes enhance reliability and maintainability while reducing the risk of errors.
 
 Enhancements in this release:
 - [CDOT PR 28](https://github.com/CDOT-CV/jpo-sdw-depositor/pull/28): Dockerfile jar rename
