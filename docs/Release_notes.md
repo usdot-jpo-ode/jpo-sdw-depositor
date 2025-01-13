@@ -14,6 +14,7 @@ linter recommendations. These changes enhance reliability and maintainability wh
 
 Enhancements in this release:
 - [CDOT PR 28](https://github.com/CDOT-CV/jpo-sdw-depositor/pull/28): Dockerfile jar rename
+- [CDOT PR 30](https://github.com/CDOT-CV/jpo-sdw-depositor/pull/30): Fixed Dockerfile to correctly copy JAR after version update (SNAPSHOT removal)
 
 Known issues:
 - No known issues at this time.

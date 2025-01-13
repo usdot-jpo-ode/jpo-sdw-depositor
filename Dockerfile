@@ -16,7 +16,7 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /home
 # Copy the jar file from the builder image to the new image 
 # since we run mvn clean package, there should only be one jar file in the target directory, and we can safely copy it with a wildcard
-COPY --from=builder /home/target/jpo-sdw-depositor-*-SNAPSHOT.jar /home/jpo-sdw-depositor.jar
+COPY --from=builder /home/target/jpo-sdw-depositor-*.jar /home/jpo-sdw-depositor.jar
 
 ENTRYPOINT ["java", \
 	"-jar", \
