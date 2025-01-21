@@ -1,6 +1,6 @@
 # Build container
-FROM maven:3.8-eclipse-temurin-21-alpine as builder
-MAINTAINER 583114@bah.com
+FROM maven:3.8-eclipse-temurin-21-alpine AS builder
+LABEL maintainer="583114@bah.com"
 
 WORKDIR /home
 
@@ -14,8 +14,10 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /home
-COPY --from=builder /home/target/jpo-sdw-depositor-1.8.0-SNAPSHOT.jar /home
+# Copy the jar file from the builder image to the new image 
+# since we run mvn clean package, there should only be one jar file in the target directory, and we can safely copy it with a wildcard
+COPY --from=builder /home/target/jpo-sdw-depositor-*.jar /home/jpo-sdw-depositor.jar
 
 ENTRYPOINT ["java", \
 	"-jar", \
-	"/home/jpo-sdw-depositor-1.8.0-SNAPSHOT.jar"]
+	"/home/jpo-sdw-depositor.jar"]
