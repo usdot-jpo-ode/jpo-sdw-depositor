@@ -1,6 +1,25 @@
 jpo-sdw-depositor Release Notes
 ----------------------------
 
+Version 1.9.0, released January 2025
+----------------------------------------
+### **Summary**
+The jpo-sdw-depositor 1.9.0 release simplifies and improves the Docker build process by automating the handling of 
+versioned jar files, eliminating the need for manual updates to the Dockerfile with each new version. The Dockerfile now
+ensures versioned jars are copied to an unversioned name within the Docker image, allowing the application to reference 
+a static file name while preserving versioned jars for distribution. Additionally, polish updates were made to modernize 
+and streamline the build process, including replacing the deprecated MAINTAINER field with LABEL maintainer, resolving 
+casing inconsistencies in Docker commands, and cleaning up unnecessary configurations in .devcontainer.json based on 
+linter recommendations. These changes enhance reliability and maintainability while reducing the risk of errors.
+
+Enhancements in this release:
+- [CDOT PR 28](https://github.com/CDOT-CV/jpo-sdw-depositor/pull/28): Dockerfile jar rename
+- [CDOT PR 30](https://github.com/CDOT-CV/jpo-sdw-depositor/pull/30): Fixed Dockerfile to correctly copy JAR after version update (SNAPSHOT removal)
+
+Known issues:
+- No known issues at this time.
+
+
 Version 1.8.0, released September 2024
 ----------------------------------------
 ### **Summary**
@@ -8,7 +27,7 @@ The changes for the jpo-sdw-depositor 1.8.0 release include a fix for the SDW_SU
 
 Enhancements in this release:
 - CDOT PR 24: Fixed SDW_SUBSCRIPTION_TOPIC environment variable not getting used instead of default if provided
-- CDOT PR 25: Added a GiHub action to opublish java artifacts to GitHub's hosted Maven Central
+- CDOT PR 25: Added a GitHub action to publish java artifacts to GitHub's hosted Maven Central
 
 
 Version 1.7.0, released June 2024
