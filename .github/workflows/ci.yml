@@ -39,7 +39,7 @@ jobs:
         with:
           fetch-depth: 0   
       - name: Download code coverage results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.2.0
         with:
           name: jpo-sdw-depositor
           path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target     
