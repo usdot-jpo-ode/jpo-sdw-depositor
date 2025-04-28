@@ -1,6 +1,16 @@
 jpo-sdw-depositor Release Notes
 ----------------------------
 
+Version 1.10.0, released June 2025
+----------------------------------------
+### **Summary**
+This release updates the Kafka version in pom.xml and the action/download-artifact version in ci.yml to versions that do not have vulnerabilities.
+
+Enhancements in this release:
+[CDOT PR 32](https://github.com/CDOT-CV/jpo-sdw-depositor/pull/32): Set up CI with Azure Pipelines
+[CDOT PR 33](https://github.com/CDOT-CV/jpo-sdw-depositor/pull/33): Update Dependency Versions
+
+
 Version 1.9.0, released January 2025
 ----------------------------------------
 ### **Summary**
