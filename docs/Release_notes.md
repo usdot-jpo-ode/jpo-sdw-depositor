@@ -1,7 +1,7 @@
 jpo-sdw-depositor Release Notes
 ----------------------------
 
-Version 1.9.1, released June 2025
+Version 1.9.1, released May 2025
 ----------------------------------------
 ### **Summary**
 This release updates the Kafka version in pom.xml and the action/download-artifact version in ci.yml to versions that do not have vulnerabilities.
