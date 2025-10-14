@@ -31,6 +31,7 @@ jobs:
          path: /__w/jpo-sdw-depositor/jpo-sdw-depositor/target 
          if-no-files-found: error
   sonar:
+    if: github.event.pull_request.base.repo.owner.login == 'usdot-jpo-ode'
     needs: [jpo-sdw-depositor]
     runs-on: ubuntu-latest
     steps:
@@ -68,4 +69,5 @@ jobs:
         with:
           sonar-properties-path: /tmp/sonar-scanner.properties
           sonar-token: ${{ secrets.SONAR_TOKEN }}
+
           working-dir: $GITHUB_WORKSPACE                 
