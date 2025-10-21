@@ -1,7 +1,7 @@
 jpo-sdw-depositor Release Notes
 ----------------------------
 
-Version 1.9.2, released October 2025
+Version 1.10.0, released October 2025
 ----------------------------------------
 ### **Summary**
 The changes for this release include adding a workflow for external issues notification and migrating to reusable Docker workflows. No changes were made to the functionality of the service.
