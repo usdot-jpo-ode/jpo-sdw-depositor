@@ -1,6 +1,16 @@
 jpo-sdw-depositor Release Notes
 ----------------------------
 
+Version 1.9.2, released October 2025
+----------------------------------------
+### **Summary**
+The changes for this release include adding a workflow for external issues notification and migrating to reusable Docker workflows. No changes were made to the functionality of the service.
+
+Enhancements in this release:
+- [USDOT PR 54](https://github.com/usdot-jpo-ode/jpo-sdw-depositor/pull/54): Add Workflow for External Issues Notification
+- [USDOT PR 55](https://github.com/usdot-jpo-ode/jpo-sdw-depositor/pull/55): Migrate to Reusable Docker Workflows
+
+
 Version 1.9.1, released May 2025
 ----------------------------------------
 ### **Summary**
