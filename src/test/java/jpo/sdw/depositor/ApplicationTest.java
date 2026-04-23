@@ -1,25 +1,20 @@
 package jpo.sdw.depositor;
 
-import org.junit.Test;
-import org.springframework.boot.SpringApplication;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockStatic;
 
-import mockit.Capturing;
-import mockit.Expectations;
+import org.junit.Test;
+import org.mockito.MockedStatic;
+import org.springframework.boot.SpringApplication;
 
 public class ApplicationTest {
 
-   @Capturing
-   SpringApplication capturingSpringApplication;
-
    @Test
    public void test() {
-      new Expectations() {
-         {
-            SpringApplication.run((Class<?>) any, (String[]) any);
-            times = 1;
-         }
-      };
-      Application.main(new String[] { "testArg" });
+      try (MockedStatic<SpringApplication> mocked = mockStatic(SpringApplication.class)) {
+         Application.main(new String[] { "testArg" });
+         mocked.verify(() -> SpringApplication.run(any(Class.class), any(String[].class)));
+      }
    }
 
 }
