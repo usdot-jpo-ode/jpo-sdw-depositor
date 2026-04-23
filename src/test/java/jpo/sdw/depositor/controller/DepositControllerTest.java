@@ -1,6 +1,6 @@
 package jpo.sdw.depositor.controller;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -42,7 +42,7 @@ public class DepositControllerTest {
          testDepositController.run();
 
          KafkaConsumerRestDepositor constructedConsumer = mockedConsumer.constructed().get(0);
-         verify(constructedConsumer, times(1)).run(any(String[].class));
+         verify(constructedConsumer, times(1)).run(nullable(String[].class));
       }
    }
 }
