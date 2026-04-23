@@ -1,143 +1,124 @@
 package jpo.sdw.depositor.depositors;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.net.URI;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import jpo.sdw.depositor.DepositorProperties;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
-import mockit.Tested;
-import mockit.Verifications;
+import nl.altindag.log.LogCaptor;
 import reactor.core.publisher.Mono;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SDWDepositorTest {
 
-   @Injectable
-   WebClient injectableWebClient;
+   @Mock
+   WebClient webClient;
 
-   @Injectable
-   DepositorProperties injectableDepositorProperties;
+   @Mock
+   WebClient.RequestBodyUriSpec requestBodyUriSpec;
 
-   @Injectable
-   JavaMailSender injectableJavaMailSender;
+   @SuppressWarnings("rawtypes")
+   @Mock
+   WebClient.RequestHeadersSpec requestHeadersSpec;
 
-   @Injectable
-   URI injectableURI;
+   @Mock
+   WebClient.ResponseSpec responseSpec;
 
-   @Mocked
-   Logger mockedLogger;
+   @Mock
+   DepositorProperties depositorProperties;
 
-   @Tested
-   SDWDepositor testSDWDepositor;
+   @Mock
+   JavaMailSender javaMailSender;
 
+   URI destination;
+
+   SDWDepositor sdwDepositor;
+
+   LogCaptor logCaptor;
+
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    @Before
-   public void before() {
-      injectableJavaMailSender = mock(JavaMailSender.class);
-      testSDWDepositor = new SDWDepositor(injectableDepositorProperties, injectableJavaMailSender, injectableWebClient, injectableURI);
+   public void before() throws Exception {
+      destination = new URI("http://example.com");
+      sdwDepositor = new SDWDepositor(depositorProperties, javaMailSender, webClient, destination);
+
+      doReturn(requestBodyUriSpec).when(webClient).post();
+      doReturn(requestHeadersSpec).when(requestBodyUriSpec).body(any(BodyInserter.class));
+      doReturn(responseSpec).when(requestHeadersSpec).retrieve();
+
+      logCaptor = LogCaptor.forClass(SDWDepositor.class);
+   }
+
+   @After
+   public void after() {
+      if (logCaptor != null) {
+         logCaptor.close();
+      }
    }
 
    @Test
    public void testSuccess() {
       String uuid = UUID.randomUUID().toString();
-      Mono<ResponseEntity<String>> clientResponse = Mono.just(ResponseEntity.ok(uuid));
-      String message = "testRequestBody";
-      mockedLogger = LoggerFactory.getLogger(SDWDepositor.class);
+      doReturn(Mono.just(ResponseEntity.ok(uuid)))
+            .when(responseSpec).toEntity(String.class);
 
-      new Expectations() {
-         {
-            injectableWebClient.post().retrieve().toEntity(String.class);
-            result = Mono.just(clientResponse);
-         }
-      };
+      sdwDepositor.deposit("testRequestBody");
 
-      testSDWDepositor.deposit(message);
-
-      new Verifications() {
-         {
-            mockedLogger.info("Response received. Status: {}, Body: {}", HttpStatus.OK, uuid);
-            times = 1;
-         }
-         {
-            injectableJavaMailSender.send((SimpleMailMessage)any);
-            times = 0;
-         }
-      };
+      assertThat(logCaptor.getInfoLogs(),
+            hasItem(equalTo("Response received. Status: " + HttpStatus.OK + ", Body: " + uuid)));
+      verify(javaMailSender, never()).send(any(SimpleMailMessage.class));
    }
 
    @Test
    public void testFailure() {
       String uuid = UUID.randomUUID().toString();
       HttpStatus statusCode = HttpStatus.I_AM_A_TEAPOT;
-      Mono<ResponseEntity<String>> clientResponse = Mono.just(ResponseEntity.status(statusCode).body(uuid));
-      String message = "testRequestBody";
-      mockedLogger = LoggerFactory.getLogger(SDWDepositor.class);
+      doReturn(Mono.just(ResponseEntity.status(statusCode).body(uuid)))
+            .when(responseSpec).toEntity(String.class);
 
-      new Expectations() {
-         {
-            injectableWebClient.post().retrieve().toEntity(String.class);
-            result = Mono.just(clientResponse);
-         }
-      };
+      sdwDepositor.deposit("testRequestBody");
 
-      testSDWDepositor.deposit(message);
-
-      new Verifications() {
-         {
-            mockedLogger.error("Response received. Status: {}, Body: {}", statusCode, uuid);
-            times = 1;
-         }
-         {
-            injectableJavaMailSender.send((SimpleMailMessage)any);
-            times = 1;
-         }
-         {
-            mockedLogger.error("Unable to send deposit failure email: {}", "failed to send");
-            times = 0;
-         }
-      };
+      assertThat(logCaptor.getErrorLogs(),
+            hasItem(equalTo("Response received. Status: " + statusCode + ", Body: " + uuid)));
+      verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
    }
 
    @Test
    public void testEmailSendFailure() {
-      Mono<ResponseEntity<String>> clientResponse = Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body(""));
-      mockedLogger = LoggerFactory.getLogger(SDWDepositor.class);
+      doReturn(Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body("")))
+            .when(responseSpec).toEntity(String.class);
+      doThrow(new RuntimeException("failed to send"))
+            .when(javaMailSender).send(any(SimpleMailMessage.class));
 
-      new Expectations() {
-         {
-            injectableWebClient.post().retrieve().toEntity(String.class);
-            result = Mono.just(clientResponse);
-         }
-      };
+      sdwDepositor.deposit("testRequestBody");
 
-      testSDWDepositor.deposit("testRequestBody");
-
-      new Verifications() {
-         {
-            mockedLogger.error("Response received. Status: {}, Body: {}", HttpStatus.FORBIDDEN, "");
-            times = 1;
-         }
-         {
-            injectableJavaMailSender.send((SimpleMailMessage)any);
-            times = 1;
-         }
-         {
-            mockedLogger.error("Unable to send deposit failure email: {}", "failed to send");
-            times = 1;
-         }
-      };
+      assertThat(logCaptor.getErrorLogs(),
+            hasItem(equalTo("Response received. Status: " + HttpStatus.FORBIDDEN + ", Body: ")));
+      assertThat(logCaptor.getErrorLogs(),
+            hasItem(containsString("failed to send")));
+      verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
    }
 }
