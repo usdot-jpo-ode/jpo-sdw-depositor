@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,36 +13,28 @@ import java.lang.reflect.Modifier;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import jpo.sdw.depositor.DepositorProperties;
-import mockit.Capturing;
-import mockit.Expectations;
-import mockit.Mocked;
 
+@RunWith(MockitoJUnitRunner.class)
 public class KafkaConsumerFactoryTest {
 
-   @Capturing
-   KafkaConsumer<?, ?> capturingKafkaConsumer;
-
-   @Mocked
+   @Mock
    DepositorProperties mockedDepositorProperties;
 
 
    @Test
    public void createConsumerShouldCreateConsumer() {
+      when(mockedDepositorProperties.getKafkaBrokers()).thenReturn("kafkaBrokers");
+      when(mockedDepositorProperties.getGroupId()).thenReturn("groupId");
 
-      new Expectations() {
-         {
-            // These are required because Properties throws NPE when values are null
-            mockedDepositorProperties.getKafkaBrokers();
-            result = "kafkaBrokers";
-
-            mockedDepositorProperties.getGroupId();
-            result = "groupId";
-
-         }
-      };
-      assertNotNull(KafkaConsumerFactory.createConsumer(mockedDepositorProperties));
+      try (MockedConstruction<KafkaConsumer> mocked = mockConstruction(KafkaConsumer.class)) {
+         assertNotNull(KafkaConsumerFactory.createConsumer(mockedDepositorProperties));
+      }
    }
 
    @Test
