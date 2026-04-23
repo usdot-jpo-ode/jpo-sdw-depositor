@@ -7,13 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 import jakarta.annotation.PostConstruct;
 
 @ConfigurationProperties("sdw")
-@PropertySource("classpath:application.properties")
 public class DepositorProperties implements EnvironmentAware {
 
    private static final Logger logger = LoggerFactory.getLogger(DepositorProperties.class);
