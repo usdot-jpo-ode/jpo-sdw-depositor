@@ -4,15 +4,12 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.Environment;
 
 import jakarta.annotation.PostConstruct;
 
 @ConfigurationProperties("sdw")
-public class DepositorProperties implements EnvironmentAware {
+public class DepositorProperties {
 
    private static final Logger logger = LoggerFactory.getLogger(DepositorProperties.class);
 
@@ -21,9 +18,6 @@ public class DepositorProperties implements EnvironmentAware {
    private static final String DEFAULT_DESTINATION_URL = "https://sdx-service.trihydro.com/api/deposit-multi";
    private static final String[] DEFAULT_SUBSCRIPTION_TOPICS = { "topic.SDWDepositorInput" };
    private static final String DEFAULT_ENCODE_TYPE = "hex";
-
-   @Autowired
-   private Environment environment;
 
    private String groupId;
    private String encodeType;
@@ -132,15 +126,6 @@ public class DepositorProperties implements EnvironmentAware {
 
    public void setEmailList(String[] emailList) {
       this.emailList = emailList;
-   }
-
-   @Override
-   public void setEnvironment(Environment environment) {
-      this.environment = environment;
-   }
-
-   public Environment getEnvironment() {
-      return environment;
    }
 
    public String getDestinationUrl() {

@@ -7,14 +7,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.springframework.core.env.Environment;
-
-import mockit.Mocked;
 
 public class DepositorPropertiesTest {
-
-   @Mocked
-   Environment mockEnvironment;
 
    @Test
    public void testAllValuesAlreadySetOneTopic() {
@@ -33,7 +27,6 @@ public class DepositorPropertiesTest {
       testDepositorProperties.setSubscriptionTopics(expectedSubscriptionTopics);
       testDepositorProperties.setDestinationUrl(expectedDestinationUrl);
       testDepositorProperties.setGroupId(expectedGroupId);
-      testDepositorProperties.setEnvironment(mockEnvironment);
       testDepositorProperties.setApiKey(expectedApiKey);
       testDepositorProperties.setEmailList(expectedEmailList);
       testDepositorProperties.setEmailFrom(expectedFromEmail);
@@ -45,7 +38,6 @@ public class DepositorPropertiesTest {
             testDepositorProperties.getSubscriptionTopics()[0]);
       assertEquals("Incorrect destinationUrl", expectedDestinationUrl, testDepositorProperties.getDestinationUrl());
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
-      assertNotNull("No environment", testDepositorProperties.getEnvironment());
       assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
       assertArrayEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
    }
@@ -68,7 +60,6 @@ public class DepositorPropertiesTest {
       testDepositorProperties.setSubscriptionTopics(expectedSubscriptionTopics);
       testDepositorProperties.setDestinationUrl(expectedDestinationUrl);
       testDepositorProperties.setGroupId(expectedGroupId);
-      testDepositorProperties.setEnvironment(mockEnvironment);
       testDepositorProperties.setApiKey(expectedApiKey);
       testDepositorProperties.setEmailList(expectedEmailList);
       testDepositorProperties.setEmailFrom(expectedFromEmail);
@@ -84,7 +75,6 @@ public class DepositorPropertiesTest {
             testDepositorProperties.getSubscriptionTopics()[2]);
       assertEquals("Incorrect destinationUrl", expectedDestinationUrl, testDepositorProperties.getDestinationUrl());
       assertEquals("Incorrect groupId", expectedGroupId, testDepositorProperties.getGroupId());
-      assertNotNull("No environment", testDepositorProperties.getEnvironment());
       assertEquals("Incorrect apikey", expectedApiKey, testDepositorProperties.getApiKey());
       assertEquals("Incorrect from email", expectedFromEmail, testDepositorProperties.getEmailFrom());
       assertArrayEquals("Incorrect email list", expectedEmailList, testDepositorProperties.getEmailList());
