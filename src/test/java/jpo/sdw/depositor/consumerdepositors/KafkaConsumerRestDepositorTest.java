@@ -3,6 +3,13 @@ package jpo.sdw.depositor.consumerdepositors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -16,133 +23,97 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
-import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor.LoopController;
 import jpo.sdw.depositor.depositors.RestDepositor;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Invocation;
-import mockit.Mock;
-import mockit.MockUp;
-import mockit.Tested;
 
+@RunWith(MockitoJUnitRunner.class)
 public class KafkaConsumerRestDepositorTest {
 
-   @Tested
+   @Mock
+   KafkaConsumer<String, String> injectableKafkaConsumer;
+
+   @Mock
+   RestDepositor<String> injectableRestDepositor;
+
    KafkaConsumerRestDepositor testKafkaConsumerRestDepositor;
 
-   @Injectable
-   KafkaConsumer<String, String> injectableKafkaConsumer;
-   @Injectable
-   RestDepositor<String> injectableRestDepositor;
-   @Injectable
-   String encodeType;
+   @Before
+   public void before() {
+      testKafkaConsumerRestDepositor = new KafkaConsumerRestDepositor(
+            injectableKafkaConsumer, injectableRestDepositor, "");
+   }
 
    @Test
    public void runShouldDepositMessage() {
+      List<ConsumerRecord<String, String>> crList = new ArrayList<>();
+      crList.add(new ConsumerRecord<>("key", 0, 0, "value", "Message"));
 
-      List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
-      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", "Message"));
-
-      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, String>>>();
+      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<>();
       recordsMap.put(new TopicPartition("string", 0), crList);
 
-      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<String, String>(recordsMap);
+      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<>(recordsMap);
 
-      new MockUp<LoopController>() {
-         @Mock
-         public boolean loop(Invocation inv) {
-            if (inv.getInvocationIndex() == 0) {
-               return true;
-            } else {
-               return false;
-            }
-         }
-      };
+      when(injectableKafkaConsumer.poll(any(Duration.class))).thenReturn(testConsumerRecords);
 
-      new Expectations() {
-         {
-            injectableKafkaConsumer.poll((Duration)any);
-            result = testConsumerRecords;
+      try (MockedStatic<LoopController> mockedLoop = mockStatic(LoopController.class)) {
+         mockedLoop.when(LoopController::loop).thenReturn(true, false);
 
-            injectableRestDepositor.deposit(anyString);
-            times = 1;
-         }
-      };
+         testKafkaConsumerRestDepositor.run("testTopic");
+      }
 
-      testKafkaConsumerRestDepositor.run("testTopic");
+      verify(injectableRestDepositor, times(1)).deposit(anyString());
    }
 
-    @Test
+   @Test
    public void runShouldDepositJSONMessage() {
+      List<ConsumerRecord<String, String>> crList = new ArrayList<>();
+      crList.add(new ConsumerRecord<>("key", 0, 0, "value", "{\"encodedMsg\":\"C4400000000680C0DE3\"}"));
 
-      List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
-      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", "{\"encodedMsg\":\"C4400000000680C0DE3\"}"));
-
-      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, String>>>();
+      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<>();
       recordsMap.put(new TopicPartition("string", 0), crList);
 
-      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<String, String>(recordsMap);
+      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<>(recordsMap);
 
-      new MockUp<LoopController>() {
-         @Mock
-         public boolean loop(Invocation inv) {
-            if (inv.getInvocationIndex() == 0) {
-               return true;
-            } else {
-               return false;
-            }
-         }
-      };
+      when(injectableKafkaConsumer.poll(any(Duration.class))).thenReturn(testConsumerRecords);
 
-      new Expectations() {
-         {
-            injectableKafkaConsumer.poll((Duration)any);
-            result = testConsumerRecords;
+      try (MockedStatic<LoopController> mockedLoop = mockStatic(LoopController.class)) {
+         mockedLoop.when(LoopController::loop).thenReturn(true, false);
 
-            injectableRestDepositor.deposit("{\"depositRequests\":[{\"encodeType\":\"\",\"encodedMsg\":\"C4400000000680C0DE3\"}]}");
-            times = 1;
-         }
-      };
+         testKafkaConsumerRestDepositor.run("testTopic");
+      }
 
-      testKafkaConsumerRestDepositor.run("testTopic");
+      verify(injectableRestDepositor, times(1))
+            .deposit("{\"depositRequests\":[{\"encodeType\":\"\",\"encodedMsg\":\"C4400000000680C0DE3\"}]}");
    }
 
    @Test
    public void runShouldDepositJSONEstimatedRemovalDateMessage() {
+      List<ConsumerRecord<String, String>> crList = new ArrayList<>();
+      crList.add(new ConsumerRecord<>("key", 0, 0, "value",
+            "{\"encodedMsg\":\"C4400000000680C0DE3\",\"estimatedRemovalDate\":\"2023-12-01T17:47:11-05:15\"}"));
 
-      List<ConsumerRecord<String, String>> crList = new ArrayList<ConsumerRecord<String, String>>();
-      crList.add(new ConsumerRecord<String, String>("key", 0, 0, "value", "{\"encodedMsg\":\"C4400000000680C0DE3\",\"estimatedRemovalDate\":\"2023-12-01T17:47:11-05:15\"}"));
-
-      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<TopicPartition, List<ConsumerRecord<String, String>>>();
+      Map<TopicPartition, List<ConsumerRecord<String, String>>> recordsMap = new HashMap<>();
       recordsMap.put(new TopicPartition("string", 0), crList);
 
-      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<String, String>(recordsMap);
+      final ConsumerRecords<String, String> testConsumerRecords = new ConsumerRecords<>(recordsMap);
 
-      new MockUp<LoopController>() {
-         @Mock
-         public boolean loop(Invocation inv) {
-            if (inv.getInvocationIndex() == 0) {
-               return true;
-            } else {
-               return false;
-            }
-         }
-      };
+      when(injectableKafkaConsumer.poll(any(Duration.class))).thenReturn(testConsumerRecords);
 
-      new Expectations() {
-         {
-            injectableKafkaConsumer.poll((Duration)any);
-            result = testConsumerRecords;
+      try (MockedStatic<LoopController> mockedLoop = mockStatic(LoopController.class)) {
+         mockedLoop.when(LoopController::loop).thenReturn(true, false);
 
-            injectableRestDepositor.deposit("{\"depositRequests\":[{\"encodeType\":\"\",\"encodedMsg\":\"C4400000000680C0DE3\",\"estimatedRemovalDate\":\"2023-12-01T17:47:11-05:15\"}]}");
-            times = 1;
-         }
-      };
+         testKafkaConsumerRestDepositor.run("testTopic");
+      }
 
-      testKafkaConsumerRestDepositor.run("testTopic");
+      verify(injectableRestDepositor, times(1))
+            .deposit("{\"depositRequests\":[{\"encodeType\":\"\",\"encodedMsg\":\"C4400000000680C0DE3\",\"estimatedRemovalDate\":\"2023-12-01T17:47:11-05:15\"}]}");
    }
 
    @Test
