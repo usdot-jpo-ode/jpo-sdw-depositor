@@ -28,9 +28,10 @@ public class DepositController {
       private DepositorProperties depositorProperties;
 
       @Autowired
-      public DepositController(DepositorProperties depositorProperties, JavaMailSender mailSender)
+      public DepositController(DepositorProperties depositorProperties, JavaMailSender mailSender,
+                  WebClient.Builder webClientBuilder)
                   throws URISyntaxException {
-            WebClient client = WebClient.builder().baseUrl(depositorProperties.getDestinationUrl())
+            WebClient client = webClientBuilder.baseUrl(depositorProperties.getDestinationUrl())
                         .defaultHeader("apikey", depositorProperties.getApiKey())
                         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
 

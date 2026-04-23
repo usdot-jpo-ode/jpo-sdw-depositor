@@ -16,6 +16,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import jpo.sdw.depositor.DepositorProperties;
 import jpo.sdw.depositor.consumerdepositors.KafkaConsumerRestDepositor;
@@ -38,7 +39,8 @@ public class DepositControllerTest {
            MockedConstruction<KafkaConsumerRestDepositor> mockedConsumer =
                mockConstruction(KafkaConsumerRestDepositor.class)) {
 
-         DepositController testDepositController = new DepositController(injectableDepositorProperties, sender);
+         DepositController testDepositController = new DepositController(
+               injectableDepositorProperties, sender, WebClient.builder());
          testDepositController.run();
 
          KafkaConsumerRestDepositor constructedConsumer = mockedConsumer.constructed().get(0);
