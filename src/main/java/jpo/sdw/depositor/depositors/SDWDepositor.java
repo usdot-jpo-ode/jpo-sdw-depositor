@@ -17,8 +17,8 @@ import reactor.core.publisher.Mono;
 
 public class SDWDepositor extends RestDepositor<String> {
 
-   private DepositorProperties depositorProperties;
-   private JavaMailSender javaMailSender;
+   private final DepositorProperties depositorProperties;
+   private final JavaMailSender javaMailSender;
 
    private static final Logger logger = LoggerFactory.getLogger(SDWDepositor.class);
 
@@ -53,7 +53,6 @@ public class SDWDepositor extends RestDepositor<String> {
                javaMailSender.send(msg);
             } catch (Exception e) {
                logger.error("Unable to send deposit failure email: {}", e.getMessage());
-               e.printStackTrace();
             }
          } else {
             logger.info("Response received. Status: {}, Body: {}", statusCode, body);
