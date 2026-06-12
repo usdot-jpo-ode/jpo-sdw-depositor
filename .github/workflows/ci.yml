@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   push:
-    branches: [develop, master, fix_sonarcloud_metric]
+    branches: [develop, master]
     
 jobs:
   jpo-sdw-depositor:
@@ -27,9 +27,15 @@ jobs:
           name: jpo-sdw-depositor
           path: target
           if-no-files-found: error
+
+  # Run SonarCloud analysis on:
+  #   - pushes to develop/master (internal)
+  #   - PRs opened from branches within the usdot-jpo-ode org
+  # Skipped for fork PRs (e.g. from cdot-dev) because GitHub does not expose
+  # SONAR_TOKEN to workflows triggered from forks.
   sonar:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'usdot-jpo-ode')
     needs: [jpo-sdw-depositor]
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ github.event.repository.name }}
