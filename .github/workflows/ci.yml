@@ -21,14 +21,12 @@ jobs:
      - name: Build
        run: |
          cd $GITHUB_WORKSPACE
-         ls -ls && pwd
-         mvn -e -X clean org.jacoco:jacoco-maven-plugin:prepare-agent package
-         mvn -e -X clean org.jacoco:jacoco-maven-plugin:report package
+         mvn -e clean verify
      - name: Archive code coverage results
        uses: actions/upload-artifact@v4
        with:
          name: jpo-sdw-depositor
-         path: /__w/jpo-sdw-depositor/jpo-sdw-depositor/target 
+         path: target
          if-no-files-found: error
   sonar:
     if: github.event.pull_request.base.repo.owner.login == 'usdot-jpo-ode'
@@ -43,31 +41,28 @@ jobs:
         uses: actions/download-artifact@v4.2.0
         with:
           name: jpo-sdw-depositor
-          path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target     
+          path: target
       - name: Find jacoco.xml
         shell: bash
         run: |
-          find "$GITHUB_WORKSPACE" -name "jacoco.xml"  
+          find "$GITHUB_WORKSPACE" -name "jacoco.xml"
       - name: Setup SonarScanner
         uses: warchant/setup-sonar-scanner@v7
       - name: Generate sonar properties file
         run: |
           cat <<EOF > /tmp/sonar-scanner.properties
           sonar.host.url=https://sonarcloud.io
-          sonar.coverage.jacoco.xmlReportPaths=/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target/site/jacoco/jacoco.xml
-          sonar.java.binaries=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
           sonar.projectName=jpo-sdw-depositor
           sonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor
           sonar.organization=usdot-jpo-ode
-          jpo-sdw-depositor.sonar.projectBaseDir=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor
-          jpo-sdw-depositor.sonar.sources=src
-          jpo-sdw-depositor.sonar.tests=src/test
-          jpo-sdw-depositor.sonar.test.inclusions=src/test/**
+          sonar.sources=src/main/java
+          sonar.tests=src/test/java
+          sonar.java.binaries=target/classes
+          sonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
           EOF
       - name: Run SonarScanner
         uses: usdot-fhwa-stol/actions/sonar-scanner@main
         with:
           sonar-properties-path: /tmp/sonar-scanner.properties
           sonar-token: ${{ secrets.SONAR_TOKEN }}
-
-          working-dir: $GITHUB_WORKSPACE                 
+          working-dir: $GITHUB_WORKSPACE
