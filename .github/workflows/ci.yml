@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   push:
-    branches: [develop, master]
+    branches: [develop, master, fix_sonarcloud_metric]
     
 jobs:
   jpo-sdw-depositor:
