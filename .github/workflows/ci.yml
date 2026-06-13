@@ -15,11 +15,9 @@ jobs:
     steps:
       - name: Checkout ${{ github.event.repository.name }}
         uses: actions/checkout@v6
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v5
-        with:
-          maven-version: 3.9.6
-      - name: Build
+      - name: Install build dependencies
+        run: apk add --no-cache git maven
+      - name: Build and Run Tests
         run: mvn -e clean verify
       - name: Archive code coverage results
         uses: actions/upload-artifact@v6
@@ -37,18 +35,32 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'usdot-jpo-ode')
     needs: [jpo-sdw-depositor]
     runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:21-jdk-alpine
+      options: --user root
     steps:
       - name: Checkout ${{ github.event.repository.name }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Install build dependencies
+        run: apk add --no-cache git maven
       - name: Download code coverage results
         uses: actions/download-artifact@v7
         with:
           name: jpo-sdw-depositor
           path: target
-      - name: SonarScanner
-        uses: usdot-fhwa-stol/actions/sonar-scanner@main
-        with:
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          working-dir: ${{ github.workspace }}
+      - name: Run Sonar Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=usdot-jpo-ode \
+            -Dsonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor \
+            -Dsonar.projectName=jpo-sdw-depositor \
+            -Dsonar.sources=src/main/java \
+            -Dsonar.tests=src/test/java \
+            -Dsonar.java.binaries=target/classes \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.token=$SONAR_TOKEN
