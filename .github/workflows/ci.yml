@@ -26,13 +26,7 @@ jobs:
           path: target
           if-no-files-found: error
 
-  # Run SonarCloud analysis on:
-  #   - pushes to develop/master (internal)
-  #   - PRs opened from branches within the usdot-jpo-ode org
-  # Skipped for fork PRs (e.g. from cdot-dev) because GitHub does not expose
-  # SONAR_TOKEN to workflows triggered from forks.
   sonar:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner.login == 'usdot-jpo-ode')
     needs: [jpo-sdw-depositor]
     runs-on: ubuntu-latest
     container:
