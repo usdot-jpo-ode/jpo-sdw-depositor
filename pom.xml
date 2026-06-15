@@ -19,9 +19,8 @@
 
    <properties>
       <java.version>21</java.version>
-      <jmockit.version>1.49</jmockit.version>
-      <argLine>
-         -javaagent:${user.home}/.m2/repository/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar</argLine>
+      <jmockit.version>1.56.0</jmockit.version>
+      <jmockit.groupId>com.github.hazendaz.jmockit</jmockit.groupId>
       <sonar.organization>usdot-jpo-ode</sonar.organization>
       <sonar.host.url>https://sonarcloud.io</sonar.host.url>
       <!-- JaCoCo Properties -->
@@ -53,7 +52,7 @@
          <optional>true</optional>
       </dependency>
       <dependency>
-         <groupId>org.jmockit</groupId>
+         <groupId>${jmockit.groupId}</groupId>
          <artifactId>jmockit</artifactId>
          <version>${jmockit.version}</version>
          <scope>test</scope>
@@ -100,8 +99,8 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>3.0.0-M7</version>
             <configuration>
-               <argLine>
-                  -javaagent:${user.home}/.m2/repository/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar</argLine>
+               <argLine>@{argLine}
+                  -javaagent:${user.home}/.m2/repository/com/github/hazendaz/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar</argLine>
                <!-- <testFailureIgnore>true</testFailureIgnore> -->
                <enableProcessChecker>all</enableProcessChecker>
                <shutdown>exit</shutdown>

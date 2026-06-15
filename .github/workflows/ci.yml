@@ -1,5 +1,6 @@
 name: CI
 on: 
+  workflow_dispatch:
   pull_request:
     types: [opened, reopened, synchronize]
   push:
@@ -7,67 +8,53 @@ on:
     
 jobs:
   jpo-sdw-depositor:
-   runs-on: ubuntu-latest
-   container:
-     image: eclipse-temurin:21-jdk-alpine
-     options: --user root
-   steps:
-     - name: Checkout ${{ github.event.repository.name }}
-       uses: actions/checkout@v4
-     - name: Set up Maven
-       uses: stCarolas/setup-maven@v4.5
-       with:
-        maven-version: 3.9.6
-     - name: Build
-       run: |
-         cd $GITHUB_WORKSPACE
-         ls -ls && pwd
-         mvn -e -X clean org.jacoco:jacoco-maven-plugin:prepare-agent package
-         mvn -e -X clean org.jacoco:jacoco-maven-plugin:report package
-     - name: Archive code coverage results
-       uses: actions/upload-artifact@v4
-       with:
-         name: jpo-sdw-depositor
-         path: /__w/jpo-sdw-depositor/jpo-sdw-depositor/target 
-         if-no-files-found: error
-  sonar:
-    if: github.event.pull_request.base.repo.owner.login == 'usdot-jpo-ode'
-    needs: [jpo-sdw-depositor]
     runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:21-jdk-alpine
+      options: --user root
     steps:
       - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   
-      - name: Download code coverage results
-        uses: actions/download-artifact@v4.2.0
+        uses: actions/checkout@v6
+      - name: Install build dependencies
+        run: apk add --no-cache git maven
+      - name: Build and Run Tests
+        run: mvn -e clean verify
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v6
         with:
           name: jpo-sdw-depositor
-          path: home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target     
-      - name: Find jacoco.xml
-        shell: bash
-        run: |
-          find "$GITHUB_WORKSPACE" -name "jacoco.xml"  
-      - name: Setup SonarScanner
-        uses: warchant/setup-sonar-scanner@v7
-      - name: Generate sonar properties file
-        run: |
-          cat <<EOF > /tmp/sonar-scanner.properties
-          sonar.host.url=https://sonarcloud.io
-          sonar.coverage.jacoco.xmlReportPaths=/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target/site/jacoco/jacoco.xml
-          sonar.java.binaries=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor/target
-          sonar.projectName=jpo-sdw-depositor
-          sonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor
-          sonar.organization=usdot-jpo-ode
-          jpo-sdw-depositor.sonar.projectBaseDir=home/runner/work/jpo-sdw-depositor/jpo-sdw-depositor
-          jpo-sdw-depositor.sonar.sources=src
-          jpo-sdw-depositor.sonar.tests=src/test
-          jpo-sdw-depositor.sonar.test.inclusions=src/test/**
-          EOF
-      - name: Run SonarScanner
-        uses: usdot-fhwa-stol/actions/sonar-scanner@main
-        with:
-          sonar-properties-path: /tmp/sonar-scanner.properties
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          path: target
+          if-no-files-found: error
 
-          working-dir: $GITHUB_WORKSPACE                 
+  sonar:
+    needs: [jpo-sdw-depositor]
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:21-jdk-alpine
+      options: --user root
+    steps:
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Install build dependencies
+        run: apk add --no-cache git maven
+      - name: Download code coverage results
+        uses: actions/download-artifact@v7
+        with:
+          name: jpo-sdw-depositor
+          path: target
+      - name: Run Sonar Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=usdot-jpo-ode \
+            -Dsonar.projectKey=usdot-jpo-ode_jpo-sdw-depositor \
+            -Dsonar.projectName=jpo-sdw-depositor \
+            -Dsonar.sources=src/main/java \
+            -Dsonar.tests=src/test/java \
+            -Dsonar.java.binaries=target/classes \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.token=$SONAR_TOKEN

@@ -1,3 +1,6 @@
+[![GitHub Release](https://img.shields.io/github/v/release/usdot-jpo-ode/jpo-sdw-depositor)](https://github.com/usdot-jpo-ode/jpo-sdw-depositor/releases) [![Docker Hub Build](https://github.com/usdot-jpo-ode/jpo-sdw-depositor/actions/workflows/dockerhub.yml/badge.svg?branch=develop)](https://github.com/usdot-jpo-ode/jpo-sdw-depositor/actions/workflows/dockerhub.yml?query=branch:develop) [![Tests](https://github.com/usdot-jpo-ode/jpo-sdw-depositor/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/usdot-jpo-ode/jpo-sdw-depositor/actions/workflows/ci.yml?query=branch:develop) [![Docker Pulls](https://img.shields.io/docker/pulls/usdotjpoode/jpo-sdw-depositor?label=Docker%20Pulls%20%28jpo-sdw-depositor%20releases%29)](https://hub.docker.com/r/usdotjpoode/jpo-sdw-depositor) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot-jpo-ode_jpo-sdw-depositor\&metric=alert_status)](https://sonarcloud.io/project/overview?id=usdot-jpo-ode_jpo-sdw-depositor) [![License](https://img.shields.io/github/license/usdot-jpo-ode/jpo-ode)](https://github.com/usdot-jpo-ode/jpo-ode)
+
+
 # jpo-sdw-depositor
 
 Subscribes to a Kafka topic and deposits messages to the [Situational Data Exchange (SDX)](https://sdx.trihydro.com/).
